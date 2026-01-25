@@ -1,0 +1,182 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Official SKKU Brand Colors:
+ * - Blue:       #072B61 (RGB 7, 43, 97)    - Leadership, trust, intellect
+ * - Orange:     #FF6C0F (RGB 255, 108, 15) - Creation, dynamism, innovation
+ * - Light Green:#8DC63F (RGB 141, 198, 63) - Restarting history
+ * - Dark Green: #124633 (RGB 18, 70, 51)   - Communication, sharing
+ */
+
+@theme inline {
+    /* Typography - Free alternatives to SKKU fonts (Frutiger/Yoon Gothic) */
+    --font-sans: "Inter", "Noto Sans KR", ui-sans-serif, system-ui, sans-serif;
+
+    /* SKKU Brand Colors */
+    --color-skku-blue: #072b61;
+    --color-skku-orange: #ff6c0f;
+    --color-skku-light-green: #8dc63f;
+    --color-skku-dark-green: #124633;
+    --color-background: hsl(var(--background));
+    --color-foreground: hsl(var(--foreground));
+    --color-card: hsl(var(--card));
+    --color-card-foreground: hsl(var(--card-foreground));
+    --color-popover: hsl(var(--popover));
+    --color-popover-foreground: hsl(var(--popover-foreground));
+    --color-primary: hsl(var(--primary));
+    --color-primary-foreground: hsl(var(--primary-foreground));
+    --color-secondary: hsl(var(--secondary));
+    --color-secondary-foreground: hsl(var(--secondary-foreground));
+    --color-muted: hsl(var(--muted));
+    --color-muted-foreground: hsl(var(--muted-foreground));
+    --color-accent: hsl(var(--accent));
+    --color-accent-foreground: hsl(var(--accent-foreground));
+    --color-destructive: hsl(var(--destructive));
+    --color-destructive-foreground: hsl(var(--destructive-foreground));
+    --color-border: hsl(var(--border));
+    --color-input: hsl(var(--input));
+    --color-ring: hsl(var(--ring));
+    --color-chart-1: hsl(var(--chart-1));
+    --color-chart-2: hsl(var(--chart-2));
+    --color-chart-3: hsl(var(--chart-3));
+    --color-chart-4: hsl(var(--chart-4));
+    --color-chart-5: hsl(var(--chart-5));
+    --color-sidebar: hsl(var(--sidebar));
+    --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+    --color-sidebar-primary: hsl(var(--sidebar-primary));
+    --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+    --color-sidebar-accent: hsl(var(--sidebar-accent));
+    --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+    --color-sidebar-border: hsl(var(--sidebar-border));
+    --color-sidebar-ring: hsl(var(--sidebar-ring));
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+    /* --- WARM SKKU PALETTE --- */
+
+    /* Background: Earthy Warm Cream (brightened) */
+    --background: 35 30% 99%;
+    /* Foreground: Near black for readability */
+    --foreground: 0 0% 5%;
+
+    /* Card */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 5%;
+
+    /* Popover */
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 5%;
+
+    /* PRIMARY: SKKU Blue #072B61 */
+    --primary: 216 87% 20%;
+    --primary-foreground: 0 0% 100%;
+
+    /* SECONDARY: SKKU Orange #FF6C0F (muted) */
+    --secondary: 23 100% 92%;
+    --secondary-foreground: 23 100% 35%;
+
+    /* MUTED: Warm gray */
+    --muted: 35 25% 95%;
+    --muted-foreground: 0 0% 40%;
+
+    /* ACCENT: Subtle warm tone for hover states */
+    --accent: 35 25% 93%;
+    --accent-foreground: 0 0% 15%;
+
+    /* DESTRUCTIVE: Red-orange derived from SKKU Orange (hue shifted toward red) */
+    --destructive: 12 90% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* BORDERS & RINGS */
+    --border: 35 25% 90%;
+    --input: 35 25% 90%;
+    --ring: 23 100% 53%;
+
+    /* Chart colors using SKKU palette */
+    --chart-1: 23 100% 53%;
+    --chart-2: 88 52% 51%;
+    --chart-3: 216 87% 20%;
+    --chart-4: 157 59% 17%;
+    --chart-5: 35 60% 60%;
+
+    --radius: 0.625rem;
+
+    /* Sidebar */
+    --sidebar: 35 30% 98%;
+    --sidebar-foreground: 0 0% 5%;
+    --sidebar-primary: 216 87% 20%;
+    --sidebar-primary-foreground: 0 0% 96%;
+    --sidebar-accent: 35 25% 93%;
+    --sidebar-accent-foreground: 0 0% 15%;
+    --sidebar-border: 35 25% 92%;
+    --sidebar-ring: 23 100% 53%;
+}
+
+.dark {
+    /* Dark mode: Warm neutral dark (dim variant) */
+    --background: 220 5% 26%;
+    --foreground: 60 10% 98%;
+
+    --card: 220 5% 30%;
+    --card-foreground: 60 10% 98%;
+
+    --popover: 220 5% 30%;
+    --popover-foreground: 60 10% 98%;
+
+    /* PRIMARY: Light gray for dark mode (consistent with dark green outline) */
+    --primary: 0 0% 83%;
+    --primary-foreground: 220 5% 20%;
+
+    /* SECONDARY: SKKU Orange */
+    --secondary: 23 60% 30%;
+    --secondary-foreground: 23 100% 90%;
+
+    --muted: 220 5% 36%;
+    --muted-foreground: 220 5% 80%;
+
+    /* ACCENT: SKKU Orange for highlights */
+    --accent: 23 75% 38%;
+    --accent-foreground: 23 100% 88%;
+
+    /* DESTRUCTIVE: Red-orange for dark mode */
+    --destructive: 12 80% 58%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 5% 42%;
+    --input: 220 5% 42%;
+    --ring: 23 100% 62%;
+
+    /* Chart colors - brighter for dark mode */
+    --chart-1: 23 100% 70%;
+    --chart-2: 88 55% 68%;
+    --chart-3: 216 70% 74%;
+    --chart-4: 157 45% 65%;
+    --chart-5: 35 60% 68%;
+
+    /* Sidebar */
+    --sidebar: 220 5% 23%;
+    --sidebar-foreground: 60 10% 98%;
+    --sidebar-primary: 0 0% 83%;
+    --sidebar-primary-foreground: 220 5% 20%;
+    --sidebar-accent: 23 70% 35%;
+    --sidebar-accent-foreground: 23 100% 88%;
+    --sidebar-border: 220 5% 34%;
+    --sidebar-ring: 23 100% 62%;
+}
+
+@layer base {
+    * {
+        border-color: hsl(var(--border));
+    }
+    body {
+        background-color: hsl(var(--background));
+        color: hsl(var(--foreground));
+        font-weight: 500;
+    }
+}
