@@ -1,110 +1,206 @@
 <script lang="ts">
-	// @ Course setup page
-	// # Purpose: Collect course metadata before scanning syllabus
+	// @ Course Schedule Setup page
+	// # Purpose: Upload a standardized Excel file containing the student's course schedule
 
 	import { Card } from '$lib/components/ui/card';
 	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
-	import { Checkbox } from '$lib/components/ui/checkbox';
-	import { Textarea } from '$lib/components/ui/textarea';
 	import { goto } from '$app/navigation';
-	import {
-		getCourseData,
-		saveCourseData,
-		getMeetingDays,
-		DEFAULT_KEYWORDS,
-		type CourseData
-	} from '$lib/utils/courseStorage';
 	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
+	import UploadIcon from '@lucide/svelte/icons/upload';
+	import CheckCircleIcon from '@lucide/svelte/icons/check-circle';
+	import LoaderIcon from '@lucide/svelte/icons/loader';
+	import FileSpreadsheetIcon from '@lucide/svelte/icons/file-spreadsheet';
+	import CalendarIcon from '@lucide/svelte/icons/calendar';
+	import InfoIcon from '@lucide/svelte/icons/info';
+	import XIcon from '@lucide/svelte/icons/x';
+	import { scanSchedule } from '$lib/utils/scheduleScannerMain';
+	import { storeScheduleScanResults } from '$lib/utils/scheduleReviewStorage';
 
-	// @ Load existing course data or start fresh
-	let courseData: CourseData = $state(getCourseData());
+	// @ State
+	let semesterLabel = $state('');
+	let semesterStart = $state('');
+	let semesterEnd = $state('');
+	let semesterStart2 = $state('');
+	let semesterEnd2 = $state('');
+	let uploadedFile: File | null = $state(null);
+	let uploadStatus: 'idle' | 'success' | 'error' | 'scanning' = $state('idle');
+	let errorMessage = $state('');
 	let formErrors: string[] = $state([]);
+	let isDragging = $state(false);
+	let scanProgress = $state('');
 
-	// / Handle form submission
-	function handleSave() {
-		// # Validate required fields
+	// @ Allowed file types (Excel only)
+	const ALLOWED_FILE_TYPES = [
+		'application/vnd.ms-excel',
+		'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+	];
+	const ALLOWED_EXTENSIONS = ['.xls', '.xlsx'];
+
+	// / Validate and accept an Excel file
+	function acceptFile(file: File) {
+		const isValidType =
+			ALLOWED_FILE_TYPES.includes(file.type) ||
+			ALLOWED_EXTENSIONS.some((ext) => file.name.toLowerCase().endsWith(ext));
+
+		if (!isValidType) {
+			uploadStatus = 'error';
+			errorMessage = 'Please upload an Excel file (.xls or .xlsx)';
+			uploadedFile = null;
+			return;
+		}
+
+		const maxSize = 10 * 1024 * 1024;
+		if (file.size > maxSize) {
+			uploadStatus = 'error';
+			errorMessage = 'File is too large. Maximum size is 10MB.';
+			uploadedFile = null;
+			return;
+		}
+
+		uploadedFile = file;
+		uploadStatus = 'success';
+		errorMessage = '';
+	}
+
+	// / Handle file input change
+	function handleFileSelect(event: Event) {
+		const target = event.target as HTMLInputElement;
+		const files = target.files;
+		if (!files || files.length === 0) return;
+		acceptFile(files[0]);
+	}
+
+	// / Handle drag events
+	function handleDragOver(event: DragEvent) {
+		event.preventDefault();
+		isDragging = true;
+	}
+
+	function handleDragLeave() {
+		isDragging = false;
+	}
+
+	function handleDrop(event: DragEvent) {
+		event.preventDefault();
+		isDragging = false;
+		const files = event.dataTransfer?.files;
+		if (!files || files.length === 0) return;
+		acceptFile(files[0]);
+	}
+
+	// / Remove the selected file
+	function removeFile() {
+		uploadedFile = null;
+		uploadStatus = 'idle';
+		errorMessage = '';
+		const input = document.querySelector('#schedule-upload') as HTMLInputElement;
+		if (input) input.value = '';
+	}
+
+	// / Handle form submission — run scanner, store results, navigate to review
+	async function handleContinue() {
 		formErrors = [];
 
-		if (!courseData.courseName.trim()) {
-			formErrors.push('Course name is required');
+		if (!semesterLabel.trim()) {
+			formErrors.push('Semester label is required (e.g., "Spring 2026")');
 		}
-		if (!courseData.courseNumber.trim()) {
-			formErrors.push('Course number is required');
-		}
-		if (!courseData.semesterStart) {
+
+		if (!semesterStart) {
 			formErrors.push('Semester start date is required');
 		}
-		if (!courseData.semesterEnd) {
+
+		if (!semesterEnd) {
 			formErrors.push('Semester end date is required');
 		}
 
-		// # Check if any meeting day selected
-		const anyDaySelected = Object.values(courseData.meetingDays).some((v) => v);
-		if (!anyDaySelected) {
-			formErrors.push('Select at least one meeting day');
-		}
-
-		// @ Date validation for primary range
-		if (courseData.semesterStart && courseData.semesterEnd) {
-			if (new Date(courseData.semesterStart) >= new Date(courseData.semesterEnd)) {
-				formErrors.push('Semester end date must be after start date');
-			}
+		if (semesterStart && semesterEnd && semesterStart >= semesterEnd) {
+			formErrors.push('Semester end date must be after start date');
 		}
 
 		// @ Date validation for secondary range (if provided)
-		if (courseData.semesterStart2 || courseData.semesterEnd2) {
-			// If one is provided, both must be provided
-			if (!courseData.semesterStart2 || !courseData.semesterEnd2) {
+		if (semesterStart2 || semesterEnd2) {
+			if (!semesterStart2 || !semesterEnd2) {
 				formErrors.push('If using a second semester range, both start and end dates are required');
-			} else if (new Date(courseData.semesterStart2) >= new Date(courseData.semesterEnd2)) {
+			} else if (semesterStart2 >= semesterEnd2) {
 				formErrors.push('Second semester end date must be after start date');
-			} else if (new Date(courseData.semesterStart2) <= new Date(courseData.semesterEnd)) {
+			} else if (semesterStart2 <= semesterEnd) {
 				formErrors.push('Second semester must start after the first semester ends (for breaks)');
 			}
 		}
 
-		// / If errors exist, don't save
-		if (formErrors.length > 0) {
-			return;
+		if (!uploadedFile) {
+			formErrors.push('Please upload your course schedule Excel file');
 		}
 
-		// @ Save to localStorage and navigate
-		if (saveCourseData(courseData)) {
-			goto('/upload');
-		} else {
-			formErrors.push('Failed to save course data');
-		}
-	}
+		if (formErrors.length > 0) return;
 
-	// / Toggle all meeting days
-	function toggleAllDays(value: boolean) {
-		courseData.meetingDays.monday = value;
-		courseData.meetingDays.tuesday = value;
-		courseData.meetingDays.wednesday = value;
-		courseData.meetingDays.thursday = value;
-		courseData.meetingDays.friday = value;
-		courseData.meetingDays.saturday = value;
-		courseData.meetingDays.sunday = value;
+		// @ Run the scanner
+		uploadStatus = 'scanning';
+		scanProgress = 'Reading Excel file...';
+
+		try {
+			scanProgress = 'Scanning schedule...';
+			const result = await scanSchedule(uploadedFile!);
+
+			if (!result || result.courses.length === 0) {
+				throw new Error('No courses found in the uploaded file');
+			}
+
+			scanProgress = 'Storing results...';
+			if (!storeScheduleScanResults(result, semesterLabel.trim(), semesterStart, semesterEnd, semesterStart2, semesterEnd2)) {
+				throw new Error('Failed to store scan results');
+			}
+
+			scanProgress = 'Done! Redirecting...';
+			await new Promise((resolve) => setTimeout(resolve, 400));
+
+			goto('/schedule-review');
+		} catch (error) {
+			uploadStatus = 'error';
+			errorMessage = error instanceof Error ? error.message : 'Scan failed';
+			scanProgress = '';
+		}
 	}
 </script>
 
-<!-- @ Page title and description -->
 <div class="flex flex-col gap-6">
+	<!-- @ Page header -->
 	<div>
-		<h1 class="text-3xl font-bold">Course Setup</h1>
+		<h1 class="text-3xl font-bold">Course Schedule Setup</h1>
 		<p class="text-muted-foreground mt-2">
-			Tell us about your course so we can better identify assignments and deadlines in your syllabus
+			Upload your course schedule to extract class times and generate calendar reminders
 		</p>
 	</div>
 
-	<!-- # Error message display -->
+	<!-- # Info card -->
+	<Card class="p-6 bg-muted/50">
+		<div class="flex items-start gap-3">
+			<InfoIcon class="w-5 h-5 text-muted-foreground mt-0.5 flex-shrink-0" />
+			<div class="space-y-2">
+				<h3 class="font-semibold">How this works</h3>
+				<ul class="text-sm space-y-2 text-muted-foreground">
+					<li>
+						<strong>Upload</strong> — Provide your course schedule as an Excel file following SKKU's standard format (.xls or .xlsx). See below for instructions on how to extract this Excel file from GLS in the standardized format.
+					</li>
+					<li>
+						<strong>Review</strong> — We'll extract your courses, meeting times, and locations so you can verify everything looks correct.
+					</li>
+					<li>
+						<strong>Generate</strong> — Once confirmed, we'll create calendar reminder events for each class session throughout the semester. The app will generate a .ics file for you to download and then upload into your preferred calendar app.
+					</li>
+				</ul>
+			</div>
+		</div>
+	</Card>
+
+	<!-- # Error messages -->
 	{#if formErrors.length > 0}
 		<div class="flex items-start gap-3 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg p-4">
 			<AlertCircleIcon class="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" />
 			<div>
-				<p class="font-semibold text-red-900 dark:text-red-100">Please fix the following errors:</p>
+				<p class="font-semibold text-red-900 dark:text-red-100">Please fix the following:</p>
 				<ul class="text-sm text-red-800 dark:text-red-200 mt-2 space-y-1">
 					{#each formErrors as error}
 						<li>• {error}</li>
@@ -114,277 +210,252 @@
 		</div>
 	{/if}
 
-	<!-- # Main form card -->
+	<!-- # Main card -->
 	<Card class="p-8">
-		<form on:submit|preventDefault={handleSave} class="space-y-8">
-			<!-- / Section 1: Course Information -->
+		<form onsubmit={(e) => { e.preventDefault(); handleContinue(); }} class="space-y-8">
+
+			<!-- / Section 1: Semester Info -->
 			<div class="space-y-4">
-				<h2 class="text-lg font-semibold border-b pb-2">Course Information</h2>
+				<h2 class="text-lg font-semibold border-b pb-2 flex items-center gap-2">
+					<CalendarIcon class="w-5 h-5" />
+					Semester Information
+				</h2>
 
-				<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-					<div class="space-y-2">
-						<Label for="courseName">Course Name</Label>
-						<Input
-							id="courseName"
-							bind:value={courseData.courseName}
-							placeholder="e.g., Introduction to Psychology"
-							type="text"
-						/>
-					</div>
-
-					<div class="space-y-2">
-						<Label for="courseNumber">Course Number</Label>
-						<Input
-							id="courseNumber"
-							bind:value={courseData.courseNumber}
-							placeholder="e.g., PSY 101"
-							type="text"
-						/>
-					</div>
-				</div>
-			</div>
-
-			<!-- / Section 2: Assignment Keywords -->
-			<div class="space-y-4">
-				<h2 class="text-lg font-semibold border-b pb-2">Assignment Keywords</h2>
-
-				<!-- # Info about pre-searched keywords -->
-				<div class="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4 space-y-3">
-					<p class="text-sm font-semibold text-blue-900 dark:text-blue-100">
-						The app will automatically search for these keywords:
-					</p>
-					<div class="flex flex-wrap gap-2">
-						{#each DEFAULT_KEYWORDS as keyword}
-							<span class="inline-block bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 px-3 py-1 rounded-full text-sm">
-								{keyword}
-							</span>
-						{/each}
-					</div>
-				</div>
-
-				<!-- @ Custom keywords field -->
-				<div class="space-y-2">
-					<Label for="otherKeywords">Additional Keywords (Optional)</Label>
-					<p class="text-xs text-muted-foreground mb-2">
-						Enter any additional keywords you'd like us to search for. Separate multiple keywords with commas. For example: <em>midterm, final exam, discussion post</em>
-					</p>
-					<Textarea
-						id="otherKeywords"
-						bind:value={courseData.otherKeywords}
-						placeholder="Add custom keywords separated by commas&#10;Example: exam, reflection paper, discussion post"
-						rows={3}
+				<div class="max-w-md space-y-2">
+					<Label for="semesterLabel">Semester</Label>
+					<Input
+						id="semesterLabel"
+						bind:value={semesterLabel}
+						placeholder="e.g., Spring 2026"
+						type="text"
 					/>
+					<p class="text-xs text-muted-foreground">
+						A label for this schedule (used for organizing your calendar events)
+					</p>
 				</div>
 
-				<!-- @ Future assignments note -->
-				<div class="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
-					<div class="flex items-start gap-3">
-						<div class="flex items-center gap-2 flex-1 mt-0.5">
-							<Checkbox
-								id="hasFutureAssignments"
-								bind:checked={courseData.hasFutureAssignments}
-							/>
-							<div class="flex flex-col gap-1 flex-1">
-								<Label for="hasFutureAssignments" class="font-medium cursor-pointer text-amber-900 dark:text-amber-100">
-									Some assignments may be posted later (not yet assigned)
-								</Label>
-								<p class="text-xs text-amber-700 dark:text-amber-300">
-									Check this if your syllabus mentions assignments that haven't been given due dates yet, or assignments that may be announced later in the semester.
-								</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<!-- / Section 3: Semester Dates -->
-			<div class="space-y-4">
-				<h2 class="text-lg font-semibold border-b pb-2">Semester Dates</h2>
-
-				<div class="space-y-4">
-					<!-- # Primary semester range -->
-					<div class="space-y-2">
-						<Label class="font-medium">Primary Semester Range</Label>
-						<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-							<div class="space-y-2">
-								<Label for="semesterStart">Start Date</Label>
-								<Input
-									id="semesterStart"
-									bind:value={courseData.semesterStart}
-									type="date"
-								/>
-							</div>
-
-							<div class="space-y-2">
-								<Label for="semesterEnd">End Date</Label>
-								<Input
-									id="semesterEnd"
-									bind:value={courseData.semesterEnd}
-									type="date"
-								/>
-							</div>
-						</div>
-					</div>
-
-					<!-- @ Optional second semester range (for holidays/breaks) -->
-					<div class="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4 space-y-3">
+				<div class="space-y-2">
+					<Label class="font-medium">Primary Semester Range</Label>
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 						<div class="space-y-2">
-							<Label class="font-medium text-blue-900 dark:text-blue-100">
-								Second Semester Range (Optional - for holidays/breaks)
-							</Label>
-							<p class="text-xs text-blue-700 dark:text-blue-300">
-								If your semester has a holiday break in the middle (e.g., Winter/Spring break), add the dates for the second portion here. This helps the app accurately assign week/session numbers to dates.
+							<Label for="semesterStart">Start Date</Label>
+							<Input
+								id="semesterStart"
+								bind:value={semesterStart}
+								type="date"
+							/>
+							<p class="text-xs text-muted-foreground">
+								First day of classes
 							</p>
 						</div>
-						<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-							<div class="space-y-2">
-								<Label for="semesterStart2">Resume Date (after break)</Label>
-								<Input
-									id="semesterStart2"
-									bind:value={courseData.semesterStart2}
-									type="date"
-									placeholder="e.g., March 20"
-								/>
-							</div>
+						<div class="space-y-2">
+							<Label for="semesterEnd">End Date</Label>
+							<Input
+								id="semesterEnd"
+								bind:value={semesterEnd}
+								type="date"
+							/>
+							<p class="text-xs text-muted-foreground">
+								Last day of classes (or before break)
+							</p>
+						</div>
+					</div>
+				</div>
 
-							<div class="space-y-2">
-								<Label for="semesterEnd2">Final End Date</Label>
-								<Input
-									id="semesterEnd2"
-									bind:value={courseData.semesterEnd2}
-									type="date"
-									placeholder="e.g., May 15"
-								/>
-							</div>
+				<!-- @ Optional second semester range (for holidays/breaks) -->
+				<div class="space-y-2">
+					<Label class="font-medium">
+						Second Semester Range
+						<span class="text-muted-foreground font-normal ml-1">(Optional)</span>
+					</Label>
+					<p class="text-xs text-muted-foreground">
+						If your semester has a holiday break in the middle (e.g., Winter/Spring break), add the dates for the second portion here. This ensures recurring calendar events are created correctly.
+					</p>
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+						<div class="space-y-2">
+							<Label for="semesterStart2">Resume Date (after break)</Label>
+							<Input
+								id="semesterStart2"
+								bind:value={semesterStart2}
+								type="date"
+							/>
+						</div>
+						<div class="space-y-2">
+							<Label for="semesterEnd2">Final End Date</Label>
+							<Input
+								id="semesterEnd2"
+								bind:value={semesterEnd2}
+								type="date"
+							/>
 						</div>
 					</div>
 				</div>
 			</div>
 
-			<!-- / Section 4: Meeting Schedule -->
+			<!-- / Section 2: File Upload -->
 			<div class="space-y-4">
-				<div class="flex items-center justify-between border-b pb-2">
-					<h2 class="text-lg font-semibold">Class Meeting Schedule</h2>
-					<div class="flex gap-2 text-sm">
-						<button
-							type="button"
-							on:click={() => toggleAllDays(true)}
-							class="text-blue-600 hover:underline"
-						>
-							Select All
-						</button>
-						<span class="text-muted-foreground">/</span>
-						<button
-							type="button"
-							on:click={() => toggleAllDays(false)}
-							class="text-blue-600 hover:underline"
-						>
-							Clear All
-						</button>
-					</div>
-				</div>
+				<h2 class="text-lg font-semibold border-b pb-2 flex items-center gap-2">
+					<FileSpreadsheetIcon class="w-5 h-5" />
+					Upload Schedule
+				</h2>
 
-				<div class="space-y-3">
-					<div class="space-y-2">
-						<Label>Days of the Week</Label>
-						<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-							<div class="flex items-center gap-2">
-								<Checkbox
-									id="monday"
-									bind:checked={courseData.meetingDays.monday}
-								/>
-								<Label for="monday" class="font-normal cursor-pointer">Monday</Label>
+				<!-- @ Drop zone -->
+				{#if !uploadedFile}
+					<div
+						class="border-2 border-dashed rounded-lg p-10 text-center transition-colors cursor-pointer
+							{isDragging
+								? 'border-primary bg-primary/5'
+								: 'border-muted-foreground/25 hover:border-muted-foreground/50'}"
+						role="button"
+						tabindex="0"
+						ondragover={handleDragOver}
+						ondragleave={handleDragLeave}
+						ondrop={handleDrop}
+						onclick={() => document.getElementById('schedule-upload')?.click()}
+						onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') document.getElementById('schedule-upload')?.click(); }}
+					>
+						<input
+							type="file"
+							class="hidden"
+							id="schedule-upload"
+							accept=".xls,.xlsx"
+							onchange={handleFileSelect}
+							aria-label="Upload course schedule Excel file"
+						/>
+
+						<div class="flex flex-col items-center gap-3">
+							<div class="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
+								<UploadIcon class="w-8 h-8 text-muted-foreground" />
 							</div>
-
-							<div class="flex items-center gap-2">
-								<Checkbox
-									id="tuesday"
-									bind:checked={courseData.meetingDays.tuesday}
-								/>
-								<Label for="tuesday" class="font-normal cursor-pointer">Tuesday</Label>
-							</div>
-
-							<div class="flex items-center gap-2">
-								<Checkbox
-									id="wednesday"
-									bind:checked={courseData.meetingDays.wednesday}
-								/>
-								<Label for="wednesday" class="font-normal cursor-pointer">Wednesday</Label>
-							</div>
-
-							<div class="flex items-center gap-2">
-								<Checkbox
-									id="thursday"
-									bind:checked={courseData.meetingDays.thursday}
-								/>
-								<Label for="thursday" class="font-normal cursor-pointer">Thursday</Label>
-							</div>
-
-							<div class="flex items-center gap-2">
-								<Checkbox
-									id="friday"
-									bind:checked={courseData.meetingDays.friday}
-								/>
-								<Label for="friday" class="font-normal cursor-pointer">Friday</Label>
-							</div>
-
-							<div class="flex items-center gap-2">
-								<Checkbox
-									id="saturday"
-									bind:checked={courseData.meetingDays.saturday}
-								/>
-								<Label for="saturday" class="font-normal cursor-pointer">Saturday</Label>
-							</div>
-
-							<div class="flex items-center gap-2">
-								<Checkbox
-									id="sunday"
-									bind:checked={courseData.meetingDays.sunday}
-								/>
-								<Label for="sunday" class="font-normal cursor-pointer">Sunday</Label>
+							<div>
+								<p class="font-semibold">Click to upload or drag and drop</p>
+								<p class="text-sm text-muted-foreground mt-1">Excel files only (.xls, .xlsx)</p>
 							</div>
 						</div>
 					</div>
-
-					<div class="space-y-2">
-						<Label for="meetingTime">Class Meeting Time</Label>
-						<Input
-							id="meetingTime"
-							bind:value={courseData.meetingTime}
-							type="time"
-						/>
+				{:else}
+					<!-- @ File selected state -->
+					<div class="flex items-center gap-4 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-4">
+						<div class="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900 flex items-center justify-center flex-shrink-0">
+							<FileSpreadsheetIcon class="w-5 h-5 text-green-700 dark:text-green-300" />
+						</div>
+						<div class="flex-1 min-w-0">
+							<p class="font-medium text-green-900 dark:text-green-100 truncate">{uploadedFile.name}</p>
+							<p class="text-sm text-green-700 dark:text-green-300">
+								{(uploadedFile.size / 1024).toFixed(1)} KB
+							</p>
+						</div>
+						<Button variant="ghost" size="sm" onclick={removeFile} class="text-green-700 dark:text-green-300 hover:text-red-600">
+							<XIcon class="w-4 h-4" />
+						</Button>
 					</div>
-				</div>
+				{/if}
+
+				<!-- @ Upload error -->
+				{#if uploadStatus === 'error'}
+					<div class="flex items-start gap-3 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg p-4">
+						<AlertCircleIcon class="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" />
+						<p class="text-sm text-red-800 dark:text-red-200">{errorMessage}</p>
+					</div>
+				{/if}
 			</div>
 
-			<!-- # Form actions -->
+			<!-- @ Scanning progress -->
+			{#if uploadStatus === 'scanning'}
+				<div class="flex items-center gap-3 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+					<LoaderIcon class="w-5 h-5 text-blue-600 dark:text-blue-400 animate-spin flex-shrink-0" />
+					<p class="text-sm text-blue-800 dark:text-blue-200">{scanProgress}</p>
+				</div>
+			{/if}
+
+			<!-- # Submit -->
 			<div class="flex gap-3 pt-4 border-t">
-				<Button type="submit" variant="default" class="flex-1">
-					Save & Continue to Upload
-				</Button>
-				<Button type="button" variant="outline">
-					Cancel
+				<Button type="submit" variant="default" class="flex-1" disabled={uploadStatus === 'scanning'}>
+					{#if uploadStatus === 'scanning'}
+						<LoaderIcon class="w-4 h-4 mr-2 animate-spin" />
+						Scanning...
+					{:else}
+						Continue to Review
+					{/if}
 				</Button>
 			</div>
 		</form>
 	</Card>
 
-	<!-- # Help section -->
-	<Card class="p-6 bg-muted/50">
-		<h3 class="font-semibold mb-3">Why we need this information</h3>
-		<ul class="text-sm space-y-2 text-muted-foreground">
-			<li>
-				<strong>Assignment Types:</strong> We'll search your syllabus for these specific keywords to find deadlines
-			</li>
-			<li>
-				<strong>Semester Dates:</strong> We'll ignore dates outside your semester to avoid false matches
-			</li>
-			<li>
-				<strong>Meeting Days & Time:</strong> We'll use this to validate found dates and catch errors
-			</li>
-			<li>
-				<strong>Future Assignments:</strong> Lets us know to look for assignments that may not have dates yet
-			</li>
-		</ul>
+	<!-- # Export instructions -->
+	<Card class="p-6">
+		<div class="space-y-4">
+			<h3 class="font-semibold text-lg">How to Export from GLS</h3>
+			<p class="text-sm text-muted-foreground">
+				Follow these steps to download your course schedule from the SKKU GLS portal:
+			</p>
+
+			<div class="space-y-6">
+				<!-- Step 1 -->
+				<div class="space-y-2">
+					<p class="text-sm font-medium">
+						<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs mr-2">1</span>
+						GLS &gt; Courses &gt; Graduate Registration &gt; Weekly Timetable
+					</p>
+					<img
+						src="/instructions/step-1-weekly-timetable.png"
+						alt="Navigate to Weekly Timetable in GLS"
+						class="rounded-lg border shadow-sm max-w-full"
+					/>
+				</div>
+
+				<!-- Step 2 -->
+				<div class="space-y-2">
+					<p class="text-sm font-medium">
+						<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs mr-2">2</span>
+						Module (GSB) Dropdown &gt; Current Semester (i.e. MP3)
+					</p>
+					<img
+						src="/instructions/step-2-module-dropdown.png"
+						alt="Select module and semester from dropdown"
+						class="rounded-lg border shadow-sm max-w-full"
+					/>
+				</div>
+
+				<!-- Step 3 -->
+				<div class="space-y-2">
+					<p class="text-sm font-medium">
+						<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs mr-2">3</span>
+						It will automatically pop up with a print option. Close this window.
+					</p>
+					<img
+						src="/instructions/step-3-print-popup.png"
+						alt="Close the print popup window"
+						class="rounded-lg border shadow-sm max-w-full"
+					/>
+				</div>
+
+				<!-- Step 4 -->
+				<div class="space-y-2">
+					<p class="text-sm font-medium">
+						<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs mr-2">4</span>
+						In the table, hover over the "Module (GSB)" cell (not the dropdown) and click the Filter symbol button. Here type the semester label after the = sign (i.e. MP3). This is case sensitive. This prevents other semesters from showing (i.e. IW2), which happens sometimes for intensive weeks and confuses the system.
+					</p>
+					<img
+						src="/instructions/step-4-filter-module.png"
+						alt="Filter by module to show only current semester courses"
+						class="rounded-lg border shadow-sm max-w-full"
+					/>
+				</div>
+
+				<!-- Step 5 -->
+				<div class="space-y-2">
+					<p class="text-sm font-medium">
+						<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs mr-2">5</span>
+						After clicking "application" you should only see the courses you registered for in the selected term. Now hover back over anywhere on the table and right click. You should get a white box with four options. Select "Download Excel"
+					</p>
+					<img
+						src="/instructions/step-5-download-excel.png"
+						alt="Right click and select Download Excel"
+						class="rounded-lg border shadow-sm max-w-full"
+					/>
+				</div>
+			</div>
+		</div>
 	</Card>
 </div>

@@ -6,7 +6,11 @@
     import SendIcon from "@lucide/svelte/icons/send";
     import Settings2Icon from "@lucide/svelte/icons/settings-2";
     import UploadIcon from "@lucide/svelte/icons/upload";
+    import CalendarIcon from "@lucide/svelte/icons/calendar";
+    import ClipboardCheckIcon from "@lucide/svelte/icons/clipboard-check";
     import SettingsIcon from "@lucide/svelte/icons/settings";
+    import ArchiveIcon from "@lucide/svelte/icons/archive";
+    import DownloadIcon from "@lucide/svelte/icons/download";
 
     const data = {
         user: {
@@ -22,9 +26,19 @@
                 isActive: true,
             },
             {
-                title: "Course Setup",
+                title: "Schedule Setup",
                 url: "/setup",
-                icon: SettingsIcon,
+                icon: CalendarIcon,
+            },
+            {
+                title: "Review Schedule",
+                url: "/schedule-review",
+                icon: ClipboardCheckIcon,
+            },
+            {
+                title: "Download Calendar",
+                url: "/calendar-download",
+                icon: DownloadIcon,
             },
             {
                 title: "Upload Syllabus",
@@ -50,6 +64,11 @@
                 title: "Settings",
                 url: "/settings",
                 icon: Settings2Icon,
+            },
+            {
+                title: "Course Setup (Legacy)",
+                url: "/setup-legacy",
+                icon: ArchiveIcon,
             },
         ],
         navSecondary: [
