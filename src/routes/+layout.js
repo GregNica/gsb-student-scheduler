@@ -1,1 +1,1 @@
-export const prerender = true;
+// Hash routing mode — SSR and prerendering are handled automatically by SvelteKit

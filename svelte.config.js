@@ -5,7 +5,15 @@ import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 const config = {
   preprocess: vitePreprocess(),
   kit: {
-    adapter: adapter(),
+    adapter: adapter({
+      fallback: "gsb-calendarupdates.html",
+    }),
+    router: {
+      type: "hash",
+    },
+    output: {
+      bundleStrategy: "inline",
+    },
     alias: {
       $lib: "./src/lib",
     },

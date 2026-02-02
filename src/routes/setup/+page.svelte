@@ -17,6 +17,11 @@
 	import XIcon from '@lucide/svelte/icons/x';
 	import { scanSchedule } from '$lib/utils/scheduleScannerMain';
 	import { storeScheduleScanResults } from '$lib/utils/scheduleReviewStorage';
+	import step1Img from '$lib/assets/instructions/step-1-weekly-timetable.png';
+	import step2Img from '$lib/assets/instructions/step-2-module-dropdown.png';
+	import step3Img from '$lib/assets/instructions/step-3-print-popup.png';
+	import step4Img from '$lib/assets/instructions/step-4-filter-module.png';
+	import step5Img from '$lib/assets/instructions/step-5-download-excel.png';
 
 	// @ State
 	let semesterLabel = $state('');
@@ -398,7 +403,7 @@
 						GLS &gt; Courses &gt; Graduate Registration &gt; Weekly Timetable
 					</p>
 					<img
-						src="/instructions/step-1-weekly-timetable.png"
+						src={step1Img}
 						alt="Navigate to Weekly Timetable in GLS"
 						class="rounded-lg border shadow-sm max-w-full"
 					/>
@@ -411,7 +416,7 @@
 						Module (GSB) Dropdown &gt; Current Semester (i.e. MP3)
 					</p>
 					<img
-						src="/instructions/step-2-module-dropdown.png"
+						src={step2Img}
 						alt="Select module and semester from dropdown"
 						class="rounded-lg border shadow-sm max-w-full"
 					/>
@@ -424,7 +429,7 @@
 						It will automatically pop up with a print option. Close this window.
 					</p>
 					<img
-						src="/instructions/step-3-print-popup.png"
+						src={step3Img}
 						alt="Close the print popup window"
 						class="rounded-lg border shadow-sm max-w-full"
 					/>
@@ -437,7 +442,7 @@
 						In the table, hover over the "Module (GSB)" cell (not the dropdown) and click the Filter symbol button. Here type the semester label after the = sign (i.e. MP3). This is case sensitive. This prevents other semesters from showing (i.e. IW2), which happens sometimes for intensive weeks and confuses the system.
 					</p>
 					<img
-						src="/instructions/step-4-filter-module.png"
+						src={step4Img}
 						alt="Filter by module to show only current semester courses"
 						class="rounded-lg border shadow-sm max-w-full"
 					/>
@@ -450,7 +455,7 @@
 						After clicking "application" you should only see the courses you registered for in the selected term. Now hover back over anywhere on the table and right click. You should get a white box with four options. Select "Download Excel"
 					</p>
 					<img
-						src="/instructions/step-5-download-excel.png"
+						src={step5Img}
 						alt="Right click and select Download Excel"
 						class="rounded-lg border shadow-sm max-w-full"
 					/>
