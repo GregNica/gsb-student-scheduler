@@ -2,7 +2,7 @@
 // # Purpose: Generate .ics (iCalendar) files for course schedules with recurring events
 // # The .ics format works universally with Google Calendar, Outlook, Apple Calendar, etc.
 
-import type { ReviewedCourse } from './scheduleReviewStorage';
+import type { ReviewedCourse, DateRange } from './scheduleReviewStorage';
 import type { MeetingSlot } from './scheduleParser';
 
 // / Map day names to iCalendar BYDAY codes
@@ -82,12 +82,19 @@ function escapeICSText(text: string): string {
 		.replace(/\n/g, '\\n');
 }
 
+// / Options for ICS generation
+interface ICSOptions {
+	includeInstructor?: boolean;
+	includeProgram?: boolean; // Include [FMBA]/[MMS] prefix in event titles (professor mode)
+}
+
 // / Generate a single VEVENT block for a course meeting
 function generateVEvent(
 	course: ReviewedCourse,
 	slot: MeetingSlot,
 	semesterStart: Date,
-	semesterEnd: Date
+	semesterEnd: Date,
+	options: ICSOptions = {}
 ): string {
 	const uid = generateUID(course.courseCode || course.courseTitle, slot.day);
 	const timestamp = getICSTimestamp();
@@ -110,13 +117,20 @@ function generateVEvent(
 	const rrule = `FREQ=WEEKLY;BYDAY=${rruleDay};UNTIL=${untilDate}`;
 
 	// Build event summary (title)
+	// @ Include program classification (FMBA/MMS) only for professor mode
+	const programPrefix = options.includeProgram && course.program && course.program !== 'unknown'
+		? `[${course.program}] `
+		: '';
 	const summary = course.courseCode
-		? `${course.courseTitle} (${course.courseCode})`
-		: course.courseTitle;
+		? `${programPrefix}${course.courseTitle} (${course.courseCode})`
+		: `${programPrefix}${course.courseTitle}`;
 
 	// Build description
 	const descriptionParts: string[] = [];
-	if (course.instructor) {
+	if (options.includeProgram && course.program && course.program !== 'unknown') {
+		descriptionParts.push(`Program: ${course.program}`);
+	}
+	if (course.instructor && options.includeInstructor !== false) {
 		descriptionParts.push(`Instructor: ${course.instructor}`);
 	}
 	if (course.credits) {
@@ -157,15 +171,10 @@ function generateVEvent(
 // / Generate a complete .ics calendar file for all courses
 export function generateICSCalendar(
 	courses: ReviewedCourse[],
-	semesterStart: string, // ISO date string YYYY-MM-DD
-	semesterEnd: string, // ISO date string YYYY-MM-DD
+	dateRanges: DateRange[],
 	calendarName: string = 'Course Schedule',
-	semesterStart2?: string, // Optional second range start (after break)
-	semesterEnd2?: string // Optional second range end
+	options: ICSOptions = {}
 ): string {
-	const startDate = new Date(semesterStart);
-	const endDate = new Date(semesterEnd);
-
 	// Calendar header
 	const header = [
 		'BEGIN:VCALENDAR',
@@ -176,27 +185,21 @@ export function generateICSCalendar(
 		`X-WR-CALNAME:${escapeICSText(calendarName)}`,
 	].join('\r\n');
 
-	// Generate events for each course and each meeting slot
+	// Generate events for each course using per-course date ranges (if available)
+	// or falling back to the global session date ranges
 	const events: string[] = [];
 
-	// @ First date range
 	for (const course of courses) {
-		for (const slot of course.meetingSlots) {
-			const event = generateVEvent(course, slot, startDate, endDate);
-			if (event) {
-				events.push(event);
-			}
-		}
-	}
+		const courseRanges = (course.dateRanges && course.dateRanges.length > 0)
+			? course.dateRanges
+			: dateRanges;
 
-	// @ Second date range (if provided)
-	if (semesterStart2 && semesterEnd2) {
-		const startDate2 = new Date(semesterStart2);
-		const endDate2 = new Date(semesterEnd2);
+		for (const range of courseRanges) {
+			const startDate = new Date(range.start);
+			const endDate = new Date(range.end);
 
-		for (const course of courses) {
 			for (const slot of course.meetingSlots) {
-				const event = generateVEvent(course, slot, startDate2, endDate2);
+				const event = generateVEvent(course, slot, startDate, endDate, options);
 				if (event) {
 					events.push(event);
 				}
@@ -232,20 +235,16 @@ export function downloadICSFile(
 // / Generate and download an .ics file for courses
 export function generateAndDownloadICS(
 	courses: ReviewedCourse[],
-	semesterStart: string,
-	semesterEnd: string,
+	dateRanges: DateRange[],
 	semesterLabel: string = 'Schedule',
-	semesterStart2?: string,
-	semesterEnd2?: string
+	options: ICSOptions = {}
 ): void {
 	const calendarName = `${semesterLabel} - Course Schedule`;
 	const icsContent = generateICSCalendar(
 		courses,
-		semesterStart,
-		semesterEnd,
+		dateRanges,
 		calendarName,
-		semesterStart2,
-		semesterEnd2
+		options
 	);
 
 	// Create filename from semester label

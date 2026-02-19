@@ -17,7 +17,9 @@
 	import ClockIcon from '@lucide/svelte/icons/clock';
 	import MapPinIcon from '@lucide/svelte/icons/map-pin';
 	import UserIcon from '@lucide/svelte/icons/user';
-	import { goto } from '$app/navigation';
+	import CalendarDaysIcon from '@lucide/svelte/icons/calendar-days';
+	import { goto } from '$lib/utils/navigation';
+	import { untrack } from 'svelte';
 	import {
 		getScheduleReviewSession,
 		deleteCourseFromReview,
@@ -25,10 +27,13 @@
 		addNewCourseToReview,
 		updateCourseInReview,
 		getScheduleReviewStats,
+		setSelectedProfessor,
+		getUniqueProfessors,
 		type ScheduleReviewSession,
 		type ReviewedCourse,
 	} from '$lib/utils/scheduleReviewStorage';
 	import type { MeetingSlot } from '$lib/utils/scheduleParser';
+	import * as Select from '$lib/components/ui/select';
 
 	// @ All 7 days for checkboxes
 	const ALL_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
@@ -46,8 +51,24 @@
 	let session: ScheduleReviewSession | null = $state(getScheduleReviewSession());
 	let showAddForm = $state(false);
 
+	// / Professor mode state
+	let selectedProfessorName = $state(session?.selectedProfessor || '');
+	let availableProfessors = $derived(
+		session ? (session.extractedProfessors || getUniqueProfessors(session)) : []
+	);
+	let isProfessorMode = $derived(session?.userRole === 'professor');
+
 	// / Editable local copy of courses (so we can bind to inputs)
-	let courses: ReviewedCourse[] = $state(session ? session.courses.map((c) => ({ ...c })) : []);
+	let allCourses: ReviewedCourse[] = $state(session ? session.courses.map((c) => ({ ...c })) : []);
+
+	// / Filtered courses based on professor selection (for professor mode)
+	let courses = $derived(
+		(!isProfessorMode || !selectedProfessorName)
+			? allCourses
+			: allCourses.filter(
+					(c) => c.instructor?.toLowerCase() === selectedProfessorName.toLowerCase()
+				)
+	);
 
 	// / Track which course card is expanded for editing
 	let editingCourseId: string | null = $state(null);
@@ -71,11 +92,13 @@
 		} as Record<string, boolean>,
 	});
 
-	// # Redirect if no session
+	// # Redirect if no session (runs once on mount)
 	$effect(() => {
-		if (!session) {
-			goto('/setup');
-		}
+		untrack(() => {
+			if (!session) {
+				goto('/setup');
+			}
+		});
 	});
 
 	// / Derived stats
@@ -87,6 +110,25 @@
 		return slots
 			.map((s) => `${DAY_ABBR[s.day] || s.day} ${s.startTime}–${s.endTime}`)
 			.join(', ');
+	}
+
+	// / Format a date range for display
+	function formatDateRange(start: string, end: string): string {
+		const s = new Date(start);
+		const e = new Date(end);
+		const opts: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
+		return `${s.toLocaleDateString('en-US', opts)} – ${e.toLocaleDateString('en-US', opts)}, ${e.getFullYear()}`;
+	}
+
+	// / Format all course date ranges as a readable string
+	function formatCourseDateRanges(course: ReviewedCourse): string {
+		if (!course.dateRanges || course.dateRanges.length === 0) return 'No dates set';
+		return course.dateRanges
+			.map((r) => {
+				const dateStr = formatDateRange(r.start, r.end);
+				return r.label ? `${r.label}: ${dateStr}` : dateStr;
+			})
+			.join(' | ');
 	}
 
 	// / Format rooms from slots (deduplicated)
@@ -117,6 +159,62 @@
 		const rooms = [...new Set(course.meetingSlots.map((s) => s.room).filter((r) => r))];
 		return rooms.join(', ');
 	}
+
+	// / Sorting and grouping helpers
+	const DAY_ORDER = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+	function getEarliestDayIndex(course: ReviewedCourse): number {
+		const indices = course.meetingSlots.map(s => DAY_ORDER.indexOf(s.day)).filter(i => i >= 0);
+		return indices.length > 0 ? Math.min(...indices) : 99;
+	}
+
+	function getEarliestStartTime(course: ReviewedCourse): string {
+		const times = course.meetingSlots.map(s => s.startTime).filter(Boolean);
+		return times.length > 0 ? [...times].sort()[0] : '99:99';
+	}
+
+	function getEarliestRangeStart(course: ReviewedCourse): string {
+		if (!course.dateRanges?.length) return '9999-12-31';
+		return [...course.dateRanges.map(r => r.start)].sort()[0] ?? '9999-12-31';
+	}
+
+	function getSemesterGroupKey(course: ReviewedCourse): string {
+		if (!course.dateRanges?.length) return '';
+		const sorted = [...course.dateRanges].sort((a, b) => a.start.localeCompare(b.start));
+		return sorted[0].label ?? '';
+	}
+
+	function getSemesterHeaderText(course: ReviewedCourse): string {
+		const key = getSemesterGroupKey(course);
+		const range = course.dateRanges?.find(r => r.label === key);
+		if (range) return `${key}  ·  ${formatDateRange(range.start, range.end)}`;
+		return key;
+	}
+
+	function getProgramLabel(program: string | undefined): string {
+		if (program === 'FMBA') return 'Full-time MBA (FMBA)';
+		if (program === 'MMS') return 'MMS';
+		return '';
+	}
+
+	// / Courses sorted: semester (chronological) → program → earliest day → start time
+	let sortedCourses = $derived(
+		[...courses].sort((a, b) => {
+			const dateA = getEarliestRangeStart(a);
+			const dateB = getEarliestRangeStart(b);
+			if (dateA !== dateB) return dateA.localeCompare(dateB);
+
+			const progA = a.program ?? '';
+			const progB = b.program ?? '';
+			if (progA !== progB) return progA.localeCompare(progB);
+
+			const dayA = getEarliestDayIndex(a);
+			const dayB = getEarliestDayIndex(b);
+			if (dayA !== dayB) return dayA - dayB;
+
+			return getEarliestStartTime(a).localeCompare(getEarliestStartTime(b));
+		})
+	);
 
 	// / Save edits to a course back into session storage
 	function saveCourseEdits(courseId: string) {
@@ -153,7 +251,7 @@
 	function handleDelete(courseId: string) {
 		if (confirm('Are you sure you want to remove this course?')) {
 			deleteCourseFromReview(courseId);
-			courses = courses.filter((c) => c.id !== courseId);
+			allCourses = allCourses.filter((c) => c.id !== courseId);
 			if (editingCourseId === courseId) editingCourseId = null;
 		}
 	}
@@ -194,7 +292,7 @@
 			// Refresh from storage
 			const updated = getScheduleReviewSession();
 			if (updated) {
-				courses = updated.courses.map((c) => ({ ...c }));
+				allCourses = updated.courses.map((c) => ({ ...c }));
 			}
 
 			// Reset form
@@ -226,13 +324,30 @@
 	}
 
 	function handleConfirm() {
-		// Save final state before proceeding
-		if (session) {
-			for (const course of courses) {
-				updateCourseInReview(course.id, course);
+		if (!session) return;
+
+		// Save any edits the user made
+		for (const course of allCourses) {
+			updateCourseInReview(course.id, course);
+		}
+
+		// In professor mode, remove courses not belonging to the selected professor
+		if (isProfessorMode && selectedProfessorName) {
+			const idsToKeep = new Set(courses.map((c) => c.id));
+			for (const course of allCourses) {
+				if (!idsToKeep.has(course.id)) {
+					deleteCourseFromReview(course.id);
+				}
 			}
 		}
+
 		goto('/calendar-download');
+	}
+
+	// / Handle professor selection change
+	function handleProfessorSelect(value: string) {
+		selectedProfessorName = value;
+		setSelectedProfessor(value);
 	}
 </script>
 
@@ -248,6 +363,47 @@
 			</div>
 			<Button onclick={handleGoBack} variant="outline">← Back to Setup</Button>
 		</div>
+
+		<!-- @ Professor selector (professor mode only) -->
+		{#if isProfessorMode && availableProfessors.length > 0}
+			<Card class="p-4 bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
+				<div class="flex flex-col sm:flex-row sm:items-center gap-4">
+					<div class="flex items-center gap-2">
+						<UserIcon class="w-5 h-5 text-blue-600 dark:text-blue-400" />
+						<span class="font-medium text-blue-900 dark:text-blue-100">Select your name:</span>
+					</div>
+					<div class="flex-1 max-w-sm">
+						<Select.Root
+							type="single"
+							value={selectedProfessorName || undefined}
+							onValueChange={(v) => v && handleProfessorSelect(v)}
+						>
+							<Select.Trigger class="w-full">
+								<span data-slot="select-value">
+									{selectedProfessorName || 'Choose your name...'}
+								</span>
+							</Select.Trigger>
+							<Select.Content>
+								{#each availableProfessors as professor}
+									<Select.Item value={professor} label={professor}>
+										{professor}
+									</Select.Item>
+								{/each}
+							</Select.Content>
+						</Select.Root>
+					</div>
+					{#if selectedProfessorName}
+						<p class="text-sm text-blue-700 dark:text-blue-300">
+							Showing {courses.length} course{courses.length !== 1 ? 's' : ''} for {selectedProfessorName}
+						</p>
+					{:else}
+						<p class="text-sm text-blue-700 dark:text-blue-300">
+							{allCourses.length} total course{allCourses.length !== 1 ? 's' : ''} found
+						</p>
+					{/if}
+				</div>
+			</Card>
+		{/if}
 
 		<!-- # Stats row -->
 		{#if stats}
@@ -273,11 +429,31 @@
 
 		<!-- @ Course cards -->
 		<div class="space-y-4">
-			{#each courses as course, idx (course.id)}
+			{#each sortedCourses as course, idx (course.id)}
 				{@const isEditing = editingCourseId === course.id}
 				{@const courseDays = getCourseDays(course)}
 				{@const courseTime = getCourseTime(course)}
 				{@const courseRoom = getCourseRoom(course)}
+				{@const semesterKey = getSemesterGroupKey(course)}
+				{@const showSemesterHeader = idx === 0 || getSemesterGroupKey(sortedCourses[idx - 1]) !== semesterKey}
+				{@const showProgramHeader = showSemesterHeader || (sortedCourses[idx - 1]?.program ?? '') !== (course.program ?? '')}
+
+				{#if showSemesterHeader}
+					<div class="flex items-center gap-3 {idx > 0 ? 'mt-6' : ''}">
+						<div class="h-px flex-1 bg-border"></div>
+						<span class="text-xs font-semibold text-muted-foreground uppercase tracking-widest px-3">
+							{getSemesterHeaderText(course) || 'Unscheduled'}
+						</span>
+						<div class="h-px flex-1 bg-border"></div>
+					</div>
+				{/if}
+
+				{#if showProgramHeader}
+					{@const progLabel = getProgramLabel(course.program)}
+					{#if progLabel}
+						<p class="text-sm font-semibold text-muted-foreground pl-1">{progLabel}</p>
+					{/if}
+				{/if}
 
 				<Card class="overflow-hidden">
 					<!-- # Course header bar -->
@@ -400,6 +576,25 @@
 									/>
 								</div>
 							</div>
+
+							<!-- @ Date ranges editing -->
+							<div class="space-y-2">
+								<Label>Date Ranges</Label>
+								{#if course.dateRanges && course.dateRanges.length > 0}
+									{#each course.dateRanges as range, ri}
+										<div class="flex items-center gap-2">
+											<Input type="date" value={range.start} onchange={(e) => { range.start = e.currentTarget.value; }} class="w-40" />
+											<span class="text-muted-foreground">–</span>
+											<Input type="date" value={range.end} onchange={(e) => { range.end = e.currentTarget.value; }} class="w-40" />
+											{#if range.label}
+												<span class="text-xs text-muted-foreground">({range.label})</span>
+											{/if}
+										</div>
+									{/each}
+								{:else}
+									<p class="text-sm text-muted-foreground">No date ranges set</p>
+								{/if}
+							</div>
 						{:else}
 							<!-- @ Display mode -->
 							<div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
@@ -422,6 +617,11 @@
 									<MapPinIcon class="w-4 h-4 text-muted-foreground flex-shrink-0" />
 									<span class="text-muted-foreground">Room:</span>
 									<span class="font-medium">{formatRooms(course.meetingSlots)}</span>
+								</div>
+								<div class="flex items-center gap-2 text-sm md:col-span-2">
+									<CalendarDaysIcon class="w-4 h-4 text-muted-foreground flex-shrink-0" />
+									<span class="text-muted-foreground">Dates:</span>
+									<span class="font-medium">{formatCourseDateRanges(course)}</span>
 								</div>
 							</div>
 

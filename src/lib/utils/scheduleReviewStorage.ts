@@ -5,8 +5,18 @@
 import type { ParsedCourse } from './scheduleParser';
 import type { ScheduleScanResult } from './scheduleScannerMain';
 
+// / User role type
+export type UserRole = 'student' | 'professor';
+
 // / A course in review — same as ParsedCourse (editable by user)
 export interface ReviewedCourse extends ParsedCourse {}
+
+// / A date range with start and end dates
+export interface DateRange {
+	start: string; // ISO date YYYY-MM-DD
+	end: string;   // ISO date YYYY-MM-DD
+	label?: string; // Optional label (e.g., "Sp1", "SpIW1")
+}
 
 // / Structure of a schedule review session
 export interface ScheduleReviewSession {
@@ -14,11 +24,16 @@ export interface ScheduleReviewSession {
 	courses: ReviewedCourse[];
 	editedByUser: Record<string, boolean>;
 	semesterLabel: string;
-	semesterStart: string; // ISO date YYYY-MM-DD
-	semesterEnd: string; // ISO date YYYY-MM-DD
-	semesterStart2?: string; // Optional second range start (after break)
-	semesterEnd2?: string; // Optional second range end
+	semesterStart: string; // ISO date YYYY-MM-DD (first range start, for backward compat)
+	semesterEnd: string; // ISO date YYYY-MM-DD (first range end, for backward compat)
+	semesterStart2?: string; // Deprecated: use dateRanges instead
+	semesterEnd2?: string; // Deprecated: use dateRanges instead
+	dateRanges: DateRange[]; // All selected date ranges
 	timestamp: number;
+	// @ Professor mode fields
+	userRole: UserRole;
+	extractedProfessors?: string[]; // All professors found in the document
+	selectedProfessor?: string; // The professor's name (for filtering)
 }
 
 const STORAGE_KEY = 'scheduleReviewSession';
@@ -28,24 +43,44 @@ const STORAGE_KEY = 'scheduleReviewSession';
 export function storeScheduleScanResults(
 	scanResult: ScheduleScanResult,
 	semesterLabel: string,
-	semesterStart: string,
-	semesterEnd: string,
-	semesterStart2?: string,
-	semesterEnd2?: string
+	dateRanges: DateRange[],
+	userRole: UserRole = 'student',
+	extractedProfessors?: string[]
 ): boolean {
 	if (typeof window === 'undefined') return false;
 
 	try {
+		// Default per-course dateRanges from session ranges if not set by parser
+		const coursesWithDates = scanResult.courses.map((c) => ({
+			...c,
+			dateRanges: c.dateRanges && c.dateRanges.length > 0
+				? c.dateRanges
+				: dateRanges.map(r => ({ start: r.start, end: r.end, label: r.label })),
+		}));
+
+		// Filter courses to only those matching the user's selected period labels
+		const selectedLabels = new Set(dateRanges.map(r => r.label).filter(Boolean));
+		const filteredCourses = selectedLabels.size > 0
+			? coursesWithDates
+				.filter(c => c.dateRanges?.some(r => r.label && selectedLabels.has(r.label)))
+				.map(c => ({
+					...c,
+					dateRanges: c.dateRanges?.filter(r => !r.label || selectedLabels.has(r.label)),
+				}))
+			: coursesWithDates;
+
 		const session: ScheduleReviewSession = {
 			scanResult,
-			courses: scanResult.courses.map((c) => ({ ...c })),
+			courses: filteredCourses,
 			editedByUser: {},
 			semesterLabel,
-			semesterStart,
-			semesterEnd,
-			semesterStart2: semesterStart2 || undefined,
-			semesterEnd2: semesterEnd2 || undefined,
+			// First range for backward compat
+			semesterStart: dateRanges[0]?.start || '',
+			semesterEnd: dateRanges[0]?.end || '',
+			dateRanges,
 			timestamp: Date.now(),
+			userRole,
+			extractedProfessors: extractedProfessors || undefined,
 		};
 
 		sessionStorage.setItem(STORAGE_KEY, JSON.stringify(session));
@@ -181,4 +216,33 @@ export function getScheduleReviewStats(session: ScheduleReviewSession) {
 	}
 
 	return stats;
+}
+
+// / Update the selected professor in the session
+// @ Used in professor mode to filter courses by instructor
+export function setSelectedProfessor(professorName: string): boolean {
+	if (typeof window === 'undefined') return false;
+
+	try {
+		const session = getScheduleReviewSession();
+		if (!session) return false;
+
+		session.selectedProfessor = professorName;
+		sessionStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+		return true;
+	} catch (error) {
+		console.error('Error setting selected professor:', error);
+		return false;
+	}
+}
+
+// / Get list of unique professors from courses
+export function getUniqueProfessors(session: ScheduleReviewSession): string[] {
+	const professors = new Set<string>();
+	for (const course of session.courses) {
+		if (course.instructor && course.instructor.trim()) {
+			professors.add(course.instructor.trim());
+		}
+	}
+	return Array.from(professors).sort();
 }

@@ -4,9 +4,8 @@
 
 	import { Card } from '$lib/components/ui/card';
 	import { Button } from '$lib/components/ui/button';
-	import { Label } from '$lib/components/ui/label';
-	import { Input } from '$lib/components/ui/input';
-	import { goto } from '$app/navigation';
+	import { Checkbox } from '$lib/components/ui/checkbox';
+	import { goto } from '$lib/utils/navigation';
 	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
 	import UploadIcon from '@lucide/svelte/icons/upload';
 	import CheckCircleIcon from '@lucide/svelte/icons/check-circle';
@@ -15,20 +14,128 @@
 	import CalendarIcon from '@lucide/svelte/icons/calendar';
 	import InfoIcon from '@lucide/svelte/icons/info';
 	import XIcon from '@lucide/svelte/icons/x';
+	import UserIcon from '@lucide/svelte/icons/user';
+	import GraduationCapIcon from '@lucide/svelte/icons/graduation-cap';
 	import { scanSchedule } from '$lib/utils/scheduleScannerMain';
-	import { storeScheduleScanResults } from '$lib/utils/scheduleReviewStorage';
+	import { storeScheduleScanResults, type DateRange } from '$lib/utils/scheduleReviewStorage';
 	import step1Img from '$lib/assets/instructions/step-1-weekly-timetable.png';
 	import step2Img from '$lib/assets/instructions/step-2-module-dropdown.png';
 	import step3Img from '$lib/assets/instructions/step-3-print-popup.png';
 	import step4Img from '$lib/assets/instructions/step-4-filter-module.png';
 	import step5Img from '$lib/assets/instructions/step-5-download-excel.png';
 
+	// @ Preset semester definitions
+	interface SemesterPeriod {
+		id: string;
+		label: string;
+		description: string;
+		category: string;
+		startDate: string;
+		endDate: string;
+		startDate2?: string; // For semesters with breaks
+		endDate2?: string;
+		tentative?: boolean;
+	}
+
+	const SEMESTER_PERIODS: SemesterPeriod[] = [
+		// Spring 2026
+		{
+			id: 'sp1-2026',
+			label: 'Sp1',
+			description: 'Spring 1 (Jan 12 - Feb 27)',
+			category: 'Spring 2026',
+			startDate: '2026-01-12',
+			endDate: '2026-02-13',
+			startDate2: '2026-02-23',
+			endDate2: '2026-02-27',
+		},
+		{
+			id: 'spiw1-2026',
+			label: 'SpIW1',
+			description: 'Spring Intensive Week 1 (Mar 2 - 6)',
+			category: 'Spring 2026',
+			startDate: '2026-03-02',
+			endDate: '2026-03-06',
+		},
+		{
+			id: 'spiw2-2026',
+			label: 'SpIW2',
+			description: 'Spring Intensive Week 2 (Mar 16 - 20)',
+			category: 'Spring 2026',
+			startDate: '2026-03-16',
+			endDate: '2026-03-20',
+		},
+		{
+			id: 'sp2-2026',
+			label: 'Sp2',
+			description: 'Spring 2 (Mar 23 - May 1)',
+			category: 'Spring 2026',
+			startDate: '2026-03-23',
+			endDate: '2026-05-01',
+		},
+		{
+			id: 'gft-2026',
+			label: 'Global Field Trip',
+			description: 'Global Field Trip (May 4 - 8)',
+			category: 'Spring 2026',
+			startDate: '2026-05-04',
+			endDate: '2026-05-08',
+		},
+		// Summer 2026
+		{
+			id: 'su-2026',
+			label: 'Su',
+			description: 'Summer (May 11 - Jun 19) - FMBA 1Y only',
+			category: 'Summer 2026',
+			startDate: '2026-05-11',
+			endDate: '2026-06-19',
+		},
+		{
+			id: 'suiw-2026',
+			label: 'SuIW',
+			description: 'Summer Intensive Week (Jun 29 - Jul 3)',
+			category: 'Summer 2026',
+			startDate: '2026-06-29',
+			endDate: '2026-07-03',
+		},
+		// Fall 2026 (tentative)
+		{
+			id: 'f1-2026',
+			label: 'F1',
+			description: 'Fall 1 (Aug 24 - Oct 9)',
+			category: 'Fall 2026',
+			startDate: '2026-08-24',
+			endDate: '2026-09-21',
+			startDate2: '2026-09-28',
+			endDate2: '2026-10-09',
+			tentative: true,
+		},
+		{
+			id: 'f2-2026',
+			label: 'F2',
+			description: 'Fall 2 (Nov 2 - Dec 11)',
+			category: 'Fall 2026',
+			startDate: '2026-11-02',
+			endDate: '2026-12-11',
+			tentative: true,
+		},
+	];
+
+	// @ Group semesters by category for display
+	const semestersByCategory = $derived(() => {
+		const groups: Record<string, SemesterPeriod[]> = {};
+		for (const semester of SEMESTER_PERIODS) {
+			if (!groups[semester.category]) {
+				groups[semester.category] = [];
+			}
+			groups[semester.category].push(semester);
+		}
+		return groups;
+	});
+
 	// @ State
-	let semesterLabel = $state('');
-	let semesterStart = $state('');
-	let semesterEnd = $state('');
-	let semesterStart2 = $state('');
-	let semesterEnd2 = $state('');
+	let userRole: 'student' | 'professor' = $state('student');
+	let selectedSemesterIds: string[] = $state([]);
 	let uploadedFile: File | null = $state(null);
 	let uploadStatus: 'idle' | 'success' | 'error' | 'scanning' = $state('idle');
 	let errorMessage = $state('');
@@ -36,22 +143,79 @@
 	let isDragging = $state(false);
 	let scanProgress = $state('');
 
-	// @ Allowed file types (Excel only)
-	const ALLOWED_FILE_TYPES = [
+	// @ Derived semester info from selections
+	let selectedSemesters = $derived(
+		SEMESTER_PERIODS.filter((s) => selectedSemesterIds.includes(s.id))
+	);
+
+	let semesterLabel = $derived(
+		selectedSemesters.map((s) => s.label).join(', ') || ''
+	);
+
+	// @ Compute combined date ranges from selected semesters
+	let semesterDateRanges = $derived((): DateRange[] => {
+		if (selectedSemesters.length === 0) {
+			return [];
+		}
+
+		// Collect all date ranges with labels from selected semesters
+		// Each period keeps its own distinct range(s) — no merging across periods
+		const ranges: DateRange[] = [];
+		for (const sem of selectedSemesters) {
+			ranges.push({ start: sem.startDate, end: sem.endDate, label: sem.label });
+			if (sem.startDate2 && sem.endDate2) {
+				ranges.push({ start: sem.startDate2, end: sem.endDate2, label: sem.label });
+			}
+		}
+
+		// Sort by start date
+		ranges.sort((a, b) => a.start.localeCompare(b.start));
+
+		return ranges;
+	});
+
+	// @ Toggle semester selection
+	function toggleSemester(id: string, checked: boolean) {
+		if (checked) {
+			selectedSemesterIds = [...selectedSemesterIds, id];
+		} else {
+			selectedSemesterIds = selectedSemesterIds.filter((s) => s !== id);
+		}
+	}
+
+	// @ Format date for display
+	function formatDateDisplay(dateStr: string): string {
+		if (!dateStr) return '';
+		const date = new Date(dateStr + 'T00:00:00');
+		return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+	}
+
+	// @ Allowed file types based on user role
+	const EXCEL_FILE_TYPES = [
 		'application/vnd.ms-excel',
 		'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 	];
-	const ALLOWED_EXTENSIONS = ['.xls', '.xlsx'];
+	const EXCEL_EXTENSIONS = ['.xls', '.xlsx'];
+	const PDF_FILE_TYPES = ['application/pdf'];
+	const PDF_EXTENSIONS = ['.pdf'];
 
-	// / Validate and accept an Excel file
+	// / Get allowed file extensions (both roles accept Excel and PDF)
+	function getAllowedExtensions(): string[] {
+		return [...EXCEL_EXTENSIONS, ...PDF_EXTENSIONS];
+	}
+
+	// / Validate and accept a file
 	function acceptFile(file: File) {
+		const fileName = file.name.toLowerCase();
 		const isValidType =
-			ALLOWED_FILE_TYPES.includes(file.type) ||
-			ALLOWED_EXTENSIONS.some((ext) => file.name.toLowerCase().endsWith(ext));
+			EXCEL_FILE_TYPES.includes(file.type) ||
+			PDF_FILE_TYPES.includes(file.type) ||
+			EXCEL_EXTENSIONS.some((ext) => fileName.endsWith(ext)) ||
+			PDF_EXTENSIONS.some((ext) => fileName.endsWith(ext));
 
 		if (!isValidType) {
 			uploadStatus = 'error';
-			errorMessage = 'Please upload an Excel file (.xls or .xlsx)';
+			errorMessage = 'Please upload an Excel file (.xls, .xlsx) or PDF file (.pdf)';
 			uploadedFile = null;
 			return;
 		}
@@ -108,31 +272,8 @@
 	async function handleContinue() {
 		formErrors = [];
 
-		if (!semesterLabel.trim()) {
-			formErrors.push('Semester label is required (e.g., "Spring 2026")');
-		}
-
-		if (!semesterStart) {
-			formErrors.push('Semester start date is required');
-		}
-
-		if (!semesterEnd) {
-			formErrors.push('Semester end date is required');
-		}
-
-		if (semesterStart && semesterEnd && semesterStart >= semesterEnd) {
-			formErrors.push('Semester end date must be after start date');
-		}
-
-		// @ Date validation for secondary range (if provided)
-		if (semesterStart2 || semesterEnd2) {
-			if (!semesterStart2 || !semesterEnd2) {
-				formErrors.push('If using a second semester range, both start and end dates are required');
-			} else if (semesterStart2 >= semesterEnd2) {
-				formErrors.push('Second semester end date must be after start date');
-			} else if (semesterStart2 <= semesterEnd) {
-				formErrors.push('Second semester must start after the first semester ends (for breaks)');
-			}
+		if (selectedSemesterIds.length === 0) {
+			formErrors.push('Please select at least one semester period');
 		}
 
 		if (!uploadedFile) {
@@ -140,6 +281,8 @@
 		}
 
 		if (formErrors.length > 0) return;
+
+		const dateRanges = semesterDateRanges();
 
 		// @ Run the scanner
 		uploadStatus = 'scanning';
@@ -153,8 +296,25 @@
 				throw new Error('No courses found in the uploaded file');
 			}
 
+			// @ Extract unique professors (used for professor mode name dropdown)
+			const professors = new Set<string>();
+			for (const course of result.courses) {
+				if (course.instructor && course.instructor.trim()) {
+					professors.add(course.instructor.trim());
+				}
+			}
+			const extractedProfessors = professors.size > 0
+				? Array.from(professors).sort()
+				: undefined;
+
 			scanProgress = 'Storing results...';
-			if (!storeScheduleScanResults(result, semesterLabel.trim(), semesterStart, semesterEnd, semesterStart2, semesterEnd2)) {
+			if (!storeScheduleScanResults(
+				result,
+				semesterLabel,
+				dateRanges,
+				userRole,
+				extractedProfessors
+			)) {
 				throw new Error('Failed to store scan results');
 			}
 
@@ -187,7 +347,7 @@
 				<h3 class="font-semibold">How this works</h3>
 				<ul class="text-sm space-y-2 text-muted-foreground">
 					<li>
-						<strong>Upload</strong> — Provide your course schedule as an Excel file following SKKU's standard format (.xls or .xlsx). See below for instructions on how to extract this Excel file from GLS in the standardized format.
+						<strong>Upload</strong> — Provide your course schedule as an Excel file (.xls or .xlsx) from GLS, or a PDF program timetable. See below for instructions on how to extract your schedule from GLS.
 					</li>
 					<li>
 						<strong>Review</strong> — We'll extract your courses, meeting times, and locations so you can verify everything looks correct.
@@ -219,82 +379,127 @@
 	<Card class="p-8">
 		<form onsubmit={(e) => { e.preventDefault(); handleContinue(); }} class="space-y-8">
 
+			<!-- / Section 0: User Role Selection -->
+			<div class="space-y-4">
+				<h2 class="text-lg font-semibold border-b pb-2 flex items-center gap-2">
+					<UserIcon class="w-5 h-5" />
+					I am a...
+				</h2>
+
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+					<!-- Student option -->
+					<button
+						type="button"
+						onclick={() => { userRole = 'student'; uploadedFile = null; uploadStatus = 'idle'; }}
+						class="flex items-start gap-4 p-4 rounded-lg border-2 text-left transition-all
+							{userRole === 'student'
+								? 'border-primary bg-primary/5'
+								: 'border-muted hover:border-muted-foreground/50'}"
+					>
+						<div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0
+							{userRole === 'student' ? 'bg-primary text-primary-foreground' : 'bg-muted'}">
+							<GraduationCapIcon class="w-5 h-5" />
+						</div>
+						<div class="flex-1">
+							<div class="font-semibold">Student</div>
+							<p class="text-sm text-muted-foreground mt-1">
+								Upload your personal course schedule from GLS to create calendar events for all your classes.
+							</p>
+						</div>
+					</button>
+
+					<!-- Professor option -->
+					<button
+						type="button"
+						onclick={() => { userRole = 'professor'; uploadedFile = null; uploadStatus = 'idle'; }}
+						class="flex items-start gap-4 p-4 rounded-lg border-2 text-left transition-all
+							{userRole === 'professor'
+								? 'border-primary bg-primary/5'
+								: 'border-muted hover:border-muted-foreground/50'}"
+					>
+						<div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0
+							{userRole === 'professor' ? 'bg-primary text-primary-foreground' : 'bg-muted'}">
+							<UserIcon class="w-5 h-5" />
+						</div>
+						<div class="flex-1">
+							<div class="font-semibold">Professor</div>
+							<p class="text-sm text-muted-foreground mt-1">
+								Upload the program timetable (PDF or Excel) and select your name to extract only your teaching schedule.
+							</p>
+						</div>
+					</button>
+				</div>
+			</div>
+
 			<!-- / Section 1: Semester Info -->
 			<div class="space-y-4">
 				<h2 class="text-lg font-semibold border-b pb-2 flex items-center gap-2">
 					<CalendarIcon class="w-5 h-5" />
-					Semester Information
+					Semester Period
 				</h2>
 
-				<div class="max-w-md space-y-2">
-					<Label for="semesterLabel">Semester</Label>
-					<Input
-						id="semesterLabel"
-						bind:value={semesterLabel}
-						placeholder="e.g., Spring 2026"
-						type="text"
-					/>
-					<p class="text-xs text-muted-foreground">
-						A label for this schedule (used for organizing your calendar events)
-					</p>
+				<p class="text-sm text-muted-foreground">
+					Select the semester period(s) for your schedule. The dates will be used to generate calendar events.
+				</p>
+
+				<!-- @ Semester checkboxes grouped by category -->
+				<div class="space-y-6">
+					{#each Object.entries(semestersByCategory()) as [category, semesters]}
+						<div class="space-y-3">
+							<h3 class="font-medium text-sm flex items-center gap-2">
+								{category}
+								{#if semesters.some((s) => s.tentative)}
+									<span class="text-xs text-amber-600 dark:text-amber-400 font-normal">(tentative)</span>
+								{/if}
+							</h3>
+							<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+								{#each semesters as semester}
+									<label
+										class="flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors
+											{selectedSemesterIds.includes(semester.id)
+												? 'border-primary bg-primary/5'
+												: 'border-muted hover:border-muted-foreground/50'}"
+									>
+										<Checkbox
+											checked={selectedSemesterIds.includes(semester.id)}
+											onCheckedChange={(checked) => toggleSemester(semester.id, !!checked)}
+											class="mt-0.5"
+										/>
+										<div class="flex-1 min-w-0">
+											<div class="font-medium text-sm">{semester.label}</div>
+											<div class="text-xs text-muted-foreground mt-0.5">
+												{semester.description}
+											</div>
+											{#if semester.startDate2}
+												<div class="text-xs text-muted-foreground mt-1 italic">
+													Includes break
+												</div>
+											{/if}
+										</div>
+									</label>
+								{/each}
+							</div>
+						</div>
+					{/each}
 				</div>
 
-				<div class="space-y-2">
-					<Label class="font-medium">Primary Semester Range</Label>
-					<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-						<div class="space-y-2">
-							<Label for="semesterStart">Start Date</Label>
-							<Input
-								id="semesterStart"
-								bind:value={semesterStart}
-								type="date"
-							/>
-							<p class="text-xs text-muted-foreground">
-								First day of classes
-							</p>
+				<!-- @ Selected semester summary -->
+				{#if selectedSemesters.length > 0}
+					<div class="bg-muted/50 rounded-lg p-4 space-y-2">
+						<div class="flex items-center gap-2">
+							<CheckCircleIcon class="w-4 h-4 text-green-600" />
+							<span class="font-medium text-sm">Selected: {semesterLabel}</span>
 						</div>
-						<div class="space-y-2">
-							<Label for="semesterEnd">End Date</Label>
-							<Input
-								id="semesterEnd"
-								bind:value={semesterEnd}
-								type="date"
-							/>
-							<p class="text-xs text-muted-foreground">
-								Last day of classes (or before break)
-							</p>
+						<div class="text-xs text-muted-foreground space-y-1">
+							{#each semesterDateRanges() as range, i}
+								<p>
+									<span class="font-medium">{range.label || `Range ${i + 1}`}:</span>
+									{formatDateDisplay(range.start)} — {formatDateDisplay(range.end)}
+								</p>
+							{/each}
 						</div>
 					</div>
-				</div>
-
-				<!-- @ Optional second semester range (for holidays/breaks) -->
-				<div class="space-y-2">
-					<Label class="font-medium">
-						Second Semester Range
-						<span class="text-muted-foreground font-normal ml-1">(Optional)</span>
-					</Label>
-					<p class="text-xs text-muted-foreground">
-						If your semester has a holiday break in the middle (e.g., Winter/Spring break), add the dates for the second portion here. This ensures recurring calendar events are created correctly.
-					</p>
-					<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-						<div class="space-y-2">
-							<Label for="semesterStart2">Resume Date (after break)</Label>
-							<Input
-								id="semesterStart2"
-								bind:value={semesterStart2}
-								type="date"
-							/>
-						</div>
-						<div class="space-y-2">
-							<Label for="semesterEnd2">Final End Date</Label>
-							<Input
-								id="semesterEnd2"
-								bind:value={semesterEnd2}
-								type="date"
-							/>
-						</div>
-					</div>
-				</div>
+				{/if}
 			</div>
 
 			<!-- / Section 2: File Upload -->
@@ -323,9 +528,9 @@
 							type="file"
 							class="hidden"
 							id="schedule-upload"
-							accept=".xls,.xlsx"
+							accept=".xls,.xlsx,.pdf"
 							onchange={handleFileSelect}
-							aria-label="Upload course schedule Excel file"
+							aria-label="Upload course schedule file"
 						/>
 
 						<div class="flex flex-col items-center gap-3">
@@ -334,7 +539,9 @@
 							</div>
 							<div>
 								<p class="font-semibold">Click to upload or drag and drop</p>
-								<p class="text-sm text-muted-foreground mt-1">Excel files only (.xls, .xlsx)</p>
+								<p class="text-sm text-muted-foreground mt-1">
+									Excel (.xls, .xlsx) or PDF files
+								</p>
 							</div>
 						</div>
 					</div>

@@ -2,8 +2,7 @@
 	// @ Schedule progress bar with step navigation
 	// # Purpose: Top navigation bar for the 3-step schedule flow (Setup → Review → Download)
 
-	import { page } from '$app/state';
-	import { goto } from '$app/navigation';
+	import { goto } from '$lib/utils/navigation';
 	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
 	import ChevronRightIcon from '@lucide/svelte/icons/chevron-right';
 	import CheckIcon from '@lucide/svelte/icons/check';
@@ -14,9 +13,22 @@
 		{ label: 'Download Calendar', path: '/calendar-download' },
 	];
 
-	// / Derive current step index from the URL
+	// / Track the current hash-based path reactively.
+	// Using window.location.hash directly (rather than $app/state page) because
+	// navigation uses window.location.hash assignment which doesn't update the
+	// SvelteKit page store.
+	let currentPath = $state('/');
+
+	$effect(() => {
+		const getPath = () => window.location.hash.replace(/^#/, '') || '/';
+		currentPath = getPath();
+		const onHashChange = () => { currentPath = getPath(); };
+		window.addEventListener('hashchange', onHashChange);
+		return () => window.removeEventListener('hashchange', onHashChange);
+	});
+
 	const currentIndex = $derived(
-		Math.max(0, steps.findIndex((s) => page.url.pathname === s.path))
+		Math.max(0, steps.findIndex((s) => currentPath === s.path))
 	);
 
 	function goToStep(index: number) {

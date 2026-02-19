@@ -15,6 +15,16 @@ export interface MeetingSlot {
 	room: string; // Classroom extracted from brackets
 }
 
+// / Program type for MBA courses
+export type ProgramType = 'FMBA' | 'MMS' | 'unknown';
+
+// / A date range for a course (when it runs)
+export interface CourseDateRange {
+	start: string; // ISO date YYYY-MM-DD
+	end: string;   // ISO date YYYY-MM-DD
+	label?: string; // e.g. "Sp1", "SpIW1"
+}
+
 // / A fully parsed course ready for review
 export interface ParsedCourse {
 	id: string;
@@ -28,6 +38,8 @@ export interface ParsedCourse {
 	reasons: string[];
 	sourceRows: [number, number, number];
 	rawTimeRoom: string; // Original Class Time/Classroom string
+	program?: ProgramType; // FMBA or MMS (for professor timetables)
+	dateRanges?: CourseDateRange[]; // Per-course date ranges (from document or session default)
 }
 
 // / Summary statistics
@@ -226,7 +238,7 @@ function generateCourseId(name: string, blockIndex: number): string {
 
 // / Build summary statistics
 // @ Borrowed from assignmentAggregator.ts getAssignmentSummary()
-function buildScheduleSummary(courses: ParsedCourse[]): ScheduleSummary {
+export function buildScheduleSummary(courses: ParsedCourse[]): ScheduleSummary {
 	const allDays = new Set<string>();
 	let totalWeeklyMeetings = 0;
 

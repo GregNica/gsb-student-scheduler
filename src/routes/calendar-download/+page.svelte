@@ -4,13 +4,14 @@
 
 	import { Card } from '$lib/components/ui/card';
 	import { Button } from '$lib/components/ui/button';
-	import { goto } from '$app/navigation';
+	import { goto } from '$lib/utils/navigation';
 	import CalendarIcon from '@lucide/svelte/icons/calendar';
 	import DownloadIcon from '@lucide/svelte/icons/download';
 	import CheckCircleIcon from '@lucide/svelte/icons/check-circle';
 	import ArrowLeftIcon from '@lucide/svelte/icons/arrow-left';
 	import ClockIcon from '@lucide/svelte/icons/clock';
 	import MapPinIcon from '@lucide/svelte/icons/map-pin';
+	import { untrack } from 'svelte';
 	import {
 		getScheduleReviewSession,
 		clearScheduleReviewSession,
@@ -18,16 +19,17 @@
 	} from '$lib/utils/scheduleReviewStorage';
 	import { generateAndDownloadICS } from '$lib/utils/icsGenerator';
 
-	// @ State
-	let session: ScheduleReviewSession | null = $state(null);
+	// @ State - initialize session immediately
+	let session: ScheduleReviewSession | null = $state(getScheduleReviewSession());
 	let downloadComplete = $state(false);
 
-	// / Load session on mount
+	// / Redirect if no session (runs once on mount)
 	$effect(() => {
-		session = getScheduleReviewSession();
-		if (!session) {
-			goto('/setup');
-		}
+		untrack(() => {
+			if (!session) {
+				goto('/setup');
+			}
+		});
 	});
 
 	// / Format date for display
@@ -45,13 +47,19 @@
 	function handleDownload() {
 		if (!session) return;
 
+		// Use dateRanges if available, fall back to legacy semesterStart/End fields
+		const dateRanges = session.dateRanges && session.dateRanges.length > 0
+			? session.dateRanges
+			: [{ start: session.semesterStart, end: session.semesterEnd }];
+
 		generateAndDownloadICS(
 			session.courses,
-			session.semesterStart,
-			session.semesterEnd,
+			dateRanges,
 			session.semesterLabel,
-			session.semesterStart2,
-			session.semesterEnd2
+			{
+				includeInstructor: session.userRole !== 'professor',
+				includeProgram: session.userRole === 'professor',
+			}
 		);
 
 		downloadComplete = true;
@@ -98,10 +106,16 @@
 						{session.courses.length} course{session.courses.length !== 1 ? 's' : ''} &bull;
 						{totalMeetings} weekly meeting{totalMeetings !== 1 ? 's' : ''}
 					</p>
-					<div class="text-sm text-green-600 dark:text-green-400 mt-2">
-						<p>{formatDate(session.semesterStart)} &mdash; {formatDate(session.semesterEnd)}</p>
-						{#if session.semesterStart2 && session.semesterEnd2}
-							<p class="mt-1">{formatDate(session.semesterStart2)} &mdash; {formatDate(session.semesterEnd2)}</p>
+					<div class="text-sm text-green-600 dark:text-green-400 mt-2 space-y-1">
+						{#if session.dateRanges && session.dateRanges.length > 0}
+							{#each session.dateRanges as range}
+								<p>
+									{#if range.label}<span class="font-medium">{range.label}:</span>{/if}
+									{formatDate(range.start)} — {formatDate(range.end)}
+								</p>
+							{/each}
+						{:else}
+							<p>{formatDate(session.semesterStart)} — {formatDate(session.semesterEnd)}</p>
 						{/if}
 					</div>
 				</div>
@@ -172,6 +186,16 @@
 								</div>
 							{/each}
 						</div>
+						{#if course.dateRanges && course.dateRanges.length > 0}
+							<div class="mt-2 text-xs text-muted-foreground">
+								{#each course.dateRanges as range}
+									<span class="inline-block mr-3">
+										{#if range.label}<span class="font-medium">{range.label}:</span>{/if}
+										{new Date(range.start).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – {new Date(range.end).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+									</span>
+								{/each}
+							</div>
+						{/if}
 					</div>
 				{/each}
 			</div>

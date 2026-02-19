@@ -1,6 +1,14 @@
 # SvelteKit
 .svelte-kit
+
+# Claude AI tool settings (local only)
+.claude/
+
+# Test/sample PDF files — don't commit to repo
+*.pdf
 build
+.vite
+gsb-calendarupdates.html
 
 # Logs
 logs

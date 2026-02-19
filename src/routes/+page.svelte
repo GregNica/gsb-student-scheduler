@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import { goto } from '$lib/utils/navigation';
 
 	// @ Redirect to schedule setup as the landing page for the pilot
 	$effect(() => {
