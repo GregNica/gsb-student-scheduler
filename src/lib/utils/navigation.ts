@@ -22,17 +22,8 @@ export function goto(path: string, _options?: { replaceState?: boolean }) {
 		return Promise.resolve();
 	}
 
-	// Set the hash - this works for navigation between pages
+	// Set the hash — SvelteKit's hash router picks this up automatically
 	window.location.hash = normalizedPath;
-
-	// If hash didn't trigger a re-render (initial load issue), force reload
-	// We detect this by checking if we're at the root with no hash
-	if (!currentHash || currentHash === '#' || currentHash === '#/') {
-		// Small delay to let hash change take effect, then reload if needed
-		setTimeout(() => {
-			window.location.reload();
-		}, 50);
-	}
 
 	return Promise.resolve();
 }

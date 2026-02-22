@@ -10,7 +10,6 @@ import {
 	type ParsedCourse,
 	type ScheduleSummary,
 } from './scheduleParser';
-import { parsePdfTimetable } from './pdfGridParser';
 import { isGridFormat, readGridScheduleExcel } from './scheduleExcelGridReader';
 
 // / Result from scanning a schedule file
@@ -102,6 +101,7 @@ async function scanExcelSchedule(file: File): Promise<ScheduleScanResult> {
 
 // / Scan PDF file (grid timetable format)
 async function scanPdfSchedule(file: File): Promise<ScheduleScanResult> {
+	const { parsePdfTimetable } = await import('./pdfGridParser');
 	const pdfResult = await parsePdfTimetable(file);
 	const summary = buildScheduleSummary(pdfResult.courses);
 

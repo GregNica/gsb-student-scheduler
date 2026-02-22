@@ -14,7 +14,8 @@ import {
 	type RGBColor,
 } from './pdfVisualBlockExtractor';
 
-// Set worker source for pdfjs (use local node_modules copy via Vite)
+// Point workerSrc at the worker module. Since this file is only loaded via
+// dynamic import (never during SSR), import.meta.url is always defined here.
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 	'pdfjs-dist/build/pdf.worker.min.mjs',
 	import.meta.url
