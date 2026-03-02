@@ -92,7 +92,7 @@ The following exist but are **not part of the active schedule workflow**. Do not
 
 ## Semester Period Presets (must update each academic year)
 
-`SEMESTER_PERIODS` in `src/routes/setup/+page.svelte` (~line 40) is a hardcoded array of all selectable periods with exact start/end dates. Add new yearly entries when SKKU publishes its calendar. The `label` values (`Sp1`, `SpIW1`, `Sp2`, `Su`, `SuIW`, `GFT`, `F1`, `F2`) must match exactly what `parseSubtitleDateRanges()` in `pdfGridParser.ts` emits — they are the keys that link the PDF parser's output to the user's selection.
+`SEMESTER_PERIODS` in `src/routes/setup/+page.svelte` (~line 40) is a hardcoded array of all selectable periods with exact start/end dates. Add new yearly entries when SKKU publishes its calendar. The `label` values (`Sp1`, `SpIW1`, `Sp2`, `Su`, `SuIW`, `GFT`, `F1`, `FIW1`, `FIW2`, `F2`) must match exactly what `parseSubtitleDateRanges()` in `pdfGridParser.ts` emits — they are the keys that link the PDF parser's output to the user's selection.
 
 ## Common Pitfalls
 - **`page` store doesn't update on hash navigation** — always use `window.location.hash` directly or the `hashchange` event.

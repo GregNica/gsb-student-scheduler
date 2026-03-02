@@ -111,6 +111,22 @@
 			tentative: true,
 		},
 		{
+			id: 'fiw1-2026',
+			label: 'FIW1',
+			description: 'Fall Intensive Week 1 (Oct 12 - 16)',
+			category: 'Fall 2026',
+			startDate: '2026-10-12',
+			endDate: '2026-10-16',
+		},
+		{
+			id: 'fiw2-2026',
+			label: 'FIW2',
+			description: 'Fall Intensive Week 2 (Oct 26 - 30)',
+			category: 'Fall 2026',
+			startDate: '2026-10-26',
+			endDate: '2026-10-30',
+		},
+		{
 			id: 'f2-2026',
 			label: 'F2',
 			description: 'Fall 2 (Nov 2 - Dec 11)',

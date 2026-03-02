@@ -142,6 +142,8 @@ The semester period checkboxes on the Setup page are **hardcoded** in `src/route
 | Summer | Su | May 11 – Jun 19, 2026 (FMBA 1Y only) |
 | Summer Intensive Week | SuIW | Jun 29 – Jul 3, 2026 |
 | Fall 1 | F1 | Aug 24 – Oct 9, 2026 (tentative) |
+| Fall Intensive Week 1 | FIW1 | Oct 12–16, 2026 |
+| Fall Intensive Week 2 | FIW2 | Oct 26–30, 2026 |
 | Fall 2 | F2 | Nov 2 – Dec 11, 2026 (tentative) |
 
 **When to update (typically once per academic year):**

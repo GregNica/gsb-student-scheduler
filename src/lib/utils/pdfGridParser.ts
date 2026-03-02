@@ -100,7 +100,7 @@ function parseSubtitleDateRanges(text: string, referenceYear: number): CourseDat
 	const ranges: CourseDateRange[] = [];
 
 	// Extract the label before the colon (e.g., "Sp1", "SpIW", "Sp2")
-	const labelMatch = text.match(/\b(Sp\w*|GFT|Su\w*|F\d+)\s*:/i);
+	const labelMatch = text.match(/\b(Sp\w*|GFT|Su\w*|F\w+)\s*:/i);
 	const label = labelMatch ? labelMatch[1] : '';
 
 	// Split by "/" for slash-separated formats (intensive weeks)
@@ -167,6 +167,9 @@ function parseSubtitleDateRanges(text: string, referenceYear: number): CourseDat
 	return ranges;
 }
 
+// Exported for unit testing only — not part of the public parser API
+export { parseSubtitleDate, formatISO, parseSubtitleDateRanges };
+
 // / Find subtitle text above a section header and extract date ranges
 function findSectionDateRanges(items: PositionedText[], header: PositionedText): CourseDateRange[] {
 	// Look for ALL text items above the section header on the same page.
@@ -185,7 +188,7 @@ function findSectionDateRanges(items: PositionedText[], header: PositionedText):
 	for (const item of aboveItems) {
 		// Only match period-label pattern (e.g. "SpIW : First Intensive Mar 2 - 6 / ...")
 		// Avoid loose date pattern which can incorrectly match course titles containing month names
-		if (/\b(Sp\w*|SpIW|GFT|Su\w*|F\d)\s*:/i.test(item.text)) {
+		if (/\b(Sp\w*|SpIW|GFT|Su\w*|F\w+)\s*:/i.test(item.text)) {
 			// Check this looks like a subtitle (not a title or header)
 			if (!/time\s*table/i.test(item.text) && !/^(FMBA|MMS)\s*\(/i.test(item.text)) {
 				subtitleY = item.y;
