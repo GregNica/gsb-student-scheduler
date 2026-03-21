@@ -5,9 +5,6 @@
 import type { ParsedCourse } from './scheduleParser';
 import type { ScheduleScanResult } from './scheduleScannerMain';
 
-// / User role type
-export type UserRole = 'student' | 'professor';
-
 // / A course in review — same as ParsedCourse (editable by user)
 export interface ReviewedCourse extends ParsedCourse {}
 
@@ -30,10 +27,6 @@ export interface ScheduleReviewSession {
 	semesterEnd2?: string; // Deprecated: use dateRanges instead
 	dateRanges: DateRange[]; // All selected date ranges
 	timestamp: number;
-	// @ Professor mode fields
-	userRole: UserRole;
-	extractedProfessors?: string[]; // All professors found in the document
-	selectedProfessor?: string; // The professor's name (for filtering)
 }
 
 const STORAGE_KEY = 'scheduleReviewSession';
@@ -43,9 +36,7 @@ const STORAGE_KEY = 'scheduleReviewSession';
 export function storeScheduleScanResults(
 	scanResult: ScheduleScanResult,
 	semesterLabel: string,
-	dateRanges: DateRange[],
-	userRole: UserRole = 'student',
-	extractedProfessors?: string[]
+	dateRanges: DateRange[]
 ): boolean {
 	if (typeof window === 'undefined') return false;
 
@@ -79,8 +70,6 @@ export function storeScheduleScanResults(
 			semesterEnd: dateRanges[0]?.end || '',
 			dateRanges,
 			timestamp: Date.now(),
-			userRole,
-			extractedProfessors: extractedProfessors || undefined,
 		};
 
 		sessionStorage.setItem(STORAGE_KEY, JSON.stringify(session));
@@ -216,24 +205,6 @@ export function getScheduleReviewStats(session: ScheduleReviewSession) {
 	}
 
 	return stats;
-}
-
-// / Update the selected professor in the session
-// @ Used in professor mode to filter courses by instructor
-export function setSelectedProfessor(professorName: string): boolean {
-	if (typeof window === 'undefined') return false;
-
-	try {
-		const session = getScheduleReviewSession();
-		if (!session) return false;
-
-		session.selectedProfessor = professorName;
-		sessionStorage.setItem(STORAGE_KEY, JSON.stringify(session));
-		return true;
-	} catch (error) {
-		console.error('Error setting selected professor:', error);
-		return false;
-	}
 }
 
 // / Get list of unique professors from courses

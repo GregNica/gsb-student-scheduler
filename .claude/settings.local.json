@@ -3,7 +3,19 @@
     "allow": [
       "mcp__acp__Bash",
       "mcp__acp__Edit",
-      "mcp__acp__Write"
+      "mcp__acp__Write",
+      "Bash(npm install:*)",
+      "Bash(node -e:*)",
+      "Bash(grep:*)",
+      "Bash(python3:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm ls:*)",
+      "Bash(sudo apt-get install:*)",
+      "Bash(git push:*)",
+      "Bash(gh run:*)",
+      "Bash(gh repo:*)",
+      "Bash(git remote:*)",
+      "Bash(npm test:*)"
     ]
   }
 }

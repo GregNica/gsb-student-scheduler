@@ -14,8 +14,6 @@
 	import CalendarIcon from '@lucide/svelte/icons/calendar';
 	import InfoIcon from '@lucide/svelte/icons/info';
 	import XIcon from '@lucide/svelte/icons/x';
-	import UserIcon from '@lucide/svelte/icons/user';
-	import GraduationCapIcon from '@lucide/svelte/icons/graduation-cap';
 	import { scanSchedule } from '$lib/utils/scheduleScannerMain';
 	import { storeScheduleScanResults, type DateRange } from '$lib/utils/scheduleReviewStorage';
 	import step1Img from '$lib/assets/instructions/step-1-weekly-timetable.png';
@@ -150,7 +148,6 @@
 	});
 
 	// @ State
-	let userRole: 'student' | 'professor' = $state('student');
 	let selectedSemesterIds: string[] = $state([]);
 	let uploadedFile: File | null = $state(null);
 	let uploadStatus: 'idle' | 'success' | 'error' | 'scanning' = $state('idle');
@@ -312,25 +309,8 @@
 				throw new Error('No courses found in the uploaded file');
 			}
 
-			// @ Extract unique professors (used for professor mode name dropdown)
-			const professors = new Set<string>();
-			for (const course of result.courses) {
-				if (course.instructor && course.instructor.trim()) {
-					professors.add(course.instructor.trim());
-				}
-			}
-			const extractedProfessors = professors.size > 0
-				? Array.from(professors).sort()
-				: undefined;
-
 			scanProgress = 'Storing results...';
-			if (!storeScheduleScanResults(
-				result,
-				semesterLabel,
-				dateRanges,
-				userRole,
-				extractedProfessors
-			)) {
+			if (!storeScheduleScanResults(result, semesterLabel, dateRanges)) {
 				throw new Error('Failed to store scan results');
 			}
 
@@ -349,9 +329,9 @@
 <div class="flex flex-col gap-6">
 	<!-- @ Page header -->
 	<div>
-		<h1 class="text-3xl font-bold">Course Schedule Setup</h1>
+		<h1 class="text-3xl font-bold">Student Schedule Setup</h1>
 		<p class="text-muted-foreground mt-2">
-			Upload your course schedule to extract class times and generate calendar reminders
+			Upload your personal course schedule from GLS to generate calendar reminders for all your classes
 		</p>
 	</div>
 
@@ -363,7 +343,7 @@
 				<h3 class="font-semibold">How this works</h3>
 				<ul class="text-sm space-y-2 text-muted-foreground">
 					<li>
-						<strong>Upload</strong> — Provide your course schedule as an Excel file (.xls or .xlsx) from GLS, or a PDF program timetable. See below for instructions on how to extract your schedule from GLS.
+						<strong>Upload</strong> — Provide your personal course schedule as an Excel file (.xls or .xlsx) exported from GLS. See below for step-by-step export instructions.
 					</li>
 					<li>
 						<strong>Review</strong> — We'll extract your courses, meeting times, and locations so you can verify everything looks correct.
@@ -394,58 +374,6 @@
 	<!-- # Main card -->
 	<Card class="p-8">
 		<form onsubmit={(e) => { e.preventDefault(); handleContinue(); }} class="space-y-8">
-
-			<!-- / Section 0: User Role Selection -->
-			<div class="space-y-4">
-				<h2 class="text-lg font-semibold border-b pb-2 flex items-center gap-2">
-					<UserIcon class="w-5 h-5" />
-					I am a...
-				</h2>
-
-				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-					<!-- Student option -->
-					<button
-						type="button"
-						onclick={() => { userRole = 'student'; uploadedFile = null; uploadStatus = 'idle'; }}
-						class="flex items-start gap-4 p-4 rounded-lg border-2 text-left transition-all
-							{userRole === 'student'
-								? 'border-primary bg-primary/5'
-								: 'border-muted hover:border-muted-foreground/50'}"
-					>
-						<div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0
-							{userRole === 'student' ? 'bg-primary text-primary-foreground' : 'bg-muted'}">
-							<GraduationCapIcon class="w-5 h-5" />
-						</div>
-						<div class="flex-1">
-							<div class="font-semibold">Student</div>
-							<p class="text-sm text-muted-foreground mt-1">
-								Upload your personal course schedule from GLS to create calendar events for all your classes.
-							</p>
-						</div>
-					</button>
-
-					<!-- Professor option -->
-					<button
-						type="button"
-						onclick={() => { userRole = 'professor'; uploadedFile = null; uploadStatus = 'idle'; }}
-						class="flex items-start gap-4 p-4 rounded-lg border-2 text-left transition-all
-							{userRole === 'professor'
-								? 'border-primary bg-primary/5'
-								: 'border-muted hover:border-muted-foreground/50'}"
-					>
-						<div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0
-							{userRole === 'professor' ? 'bg-primary text-primary-foreground' : 'bg-muted'}">
-							<UserIcon class="w-5 h-5" />
-						</div>
-						<div class="flex-1">
-							<div class="font-semibold">Professor</div>
-							<p class="text-sm text-muted-foreground mt-1">
-								Upload the program timetable (PDF or Excel) and select your name to extract only your teaching schedule.
-							</p>
-						</div>
-					</button>
-				</div>
-			</div>
 
 			<!-- / Section 1: Semester Info -->
 			<div class="space-y-4">

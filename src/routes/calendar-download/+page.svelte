@@ -55,11 +55,7 @@
 		generateAndDownloadICS(
 			session.courses,
 			dateRanges,
-			session.semesterLabel,
-			{
-				includeInstructor: session.userRole !== 'professor',
-				includeProgram: session.userRole === 'professor',
-			}
+			session.semesterLabel
 		);
 
 		downloadComplete = true;

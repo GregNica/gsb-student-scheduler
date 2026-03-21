@@ -85,7 +85,6 @@ function escapeICSText(text: string): string {
 // / Options for ICS generation
 interface ICSOptions {
 	includeInstructor?: boolean;
-	includeProgram?: boolean; // Include [FMBA]/[MMS] prefix in event titles (professor mode)
 }
 
 // / Generate a single VEVENT block for a course meeting
@@ -117,19 +116,12 @@ function generateVEvent(
 	const rrule = `FREQ=WEEKLY;BYDAY=${rruleDay};UNTIL=${untilDate}`;
 
 	// Build event summary (title)
-	// @ Include program classification (FMBA/MMS) only for professor mode
-	const programPrefix = options.includeProgram && course.program && course.program !== 'unknown'
-		? `[${course.program}] `
-		: '';
 	const summary = course.courseCode
-		? `${programPrefix}${course.courseTitle} (${course.courseCode})`
-		: `${programPrefix}${course.courseTitle}`;
+		? `${course.courseTitle} (${course.courseCode})`
+		: course.courseTitle;
 
 	// Build description
 	const descriptionParts: string[] = [];
-	if (options.includeProgram && course.program && course.program !== 'unknown') {
-		descriptionParts.push(`Program: ${course.program}`);
-	}
 	if (course.instructor && options.includeInstructor !== false) {
 		descriptionParts.push(`Instructor: ${course.instructor}`);
 	}

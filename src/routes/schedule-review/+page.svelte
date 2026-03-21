@@ -27,13 +27,10 @@
 		addNewCourseToReview,
 		updateCourseInReview,
 		getScheduleReviewStats,
-		setSelectedProfessor,
-		getUniqueProfessors,
 		type ScheduleReviewSession,
 		type ReviewedCourse,
 	} from '$lib/utils/scheduleReviewStorage';
 	import type { MeetingSlot } from '$lib/utils/scheduleParser';
-	import * as Select from '$lib/components/ui/select';
 
 	// @ All 7 days for checkboxes
 	const ALL_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
@@ -51,24 +48,9 @@
 	let session: ScheduleReviewSession | null = $state(getScheduleReviewSession());
 	let showAddForm = $state(false);
 
-	// / Professor mode state
-	let selectedProfessorName = $state(session?.selectedProfessor || '');
-	let availableProfessors = $derived(
-		session ? (session.extractedProfessors || getUniqueProfessors(session)) : []
-	);
-	let isProfessorMode = $derived(session?.userRole === 'professor');
-
 	// / Editable local copy of courses (so we can bind to inputs)
 	let allCourses: ReviewedCourse[] = $state(session ? session.courses.map((c) => ({ ...c })) : []);
-
-	// / Filtered courses based on professor selection (for professor mode)
-	let courses = $derived(
-		(!isProfessorMode || !selectedProfessorName)
-			? allCourses
-			: allCourses.filter(
-					(c) => c.instructor?.toLowerCase() === selectedProfessorName.toLowerCase()
-				)
-	);
+	let courses = $derived(allCourses);
 
 	// / Track which course card is expanded for editing
 	let editingCourseId: string | null = $state(null);
@@ -331,23 +313,7 @@
 			updateCourseInReview(course.id, course);
 		}
 
-		// In professor mode, remove courses not belonging to the selected professor
-		if (isProfessorMode && selectedProfessorName) {
-			const idsToKeep = new Set(courses.map((c) => c.id));
-			for (const course of allCourses) {
-				if (!idsToKeep.has(course.id)) {
-					deleteCourseFromReview(course.id);
-				}
-			}
-		}
-
 		goto('/calendar-download');
-	}
-
-	// / Handle professor selection change
-	function handleProfessorSelect(value: string) {
-		selectedProfessorName = value;
-		setSelectedProfessor(value);
 	}
 </script>
 
@@ -363,47 +329,6 @@
 			</div>
 			<Button onclick={handleGoBack} variant="outline">← Back to Setup</Button>
 		</div>
-
-		<!-- @ Professor selector (professor mode only) -->
-		{#if isProfessorMode && availableProfessors.length > 0}
-			<Card class="p-4 bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
-				<div class="flex flex-col sm:flex-row sm:items-center gap-4">
-					<div class="flex items-center gap-2">
-						<UserIcon class="w-5 h-5 text-blue-600 dark:text-blue-400" />
-						<span class="font-medium text-blue-900 dark:text-blue-100">Select your name:</span>
-					</div>
-					<div class="flex-1 max-w-sm">
-						<Select.Root
-							type="single"
-							value={selectedProfessorName || undefined}
-							onValueChange={(v) => v && handleProfessorSelect(v)}
-						>
-							<Select.Trigger class="w-full">
-								<span data-slot="select-value">
-									{selectedProfessorName || 'Choose your name...'}
-								</span>
-							</Select.Trigger>
-							<Select.Content>
-								{#each availableProfessors as professor}
-									<Select.Item value={professor} label={professor}>
-										{professor}
-									</Select.Item>
-								{/each}
-							</Select.Content>
-						</Select.Root>
-					</div>
-					{#if selectedProfessorName}
-						<p class="text-sm text-blue-700 dark:text-blue-300">
-							Showing {courses.length} course{courses.length !== 1 ? 's' : ''} for {selectedProfessorName}
-						</p>
-					{:else}
-						<p class="text-sm text-blue-700 dark:text-blue-300">
-							{allCourses.length} total course{allCourses.length !== 1 ? 's' : ''} found
-						</p>
-					{/if}
-				</div>
-			</Card>
-		{/if}
 
 		<!-- # Stats row -->
 		{#if stats}

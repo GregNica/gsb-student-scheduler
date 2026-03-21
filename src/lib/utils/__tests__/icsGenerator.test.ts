@@ -153,29 +153,10 @@ describe('generateICSCalendar — student mode VEVENT', () => {
 // VEVENT content — professor mode
 // ---------------------------------------------------------------------------
 
-describe('generateICSCalendar — professor mode', () => {
-	const professorOptions = { includeProgram: true, includeInstructor: false };
-
-	it('adds program prefix to SUMMARY', () => {
-		const output = generateICSCalendar([makeCourse()], SP1_RANGES, 'Schedule', professorOptions);
-		expect(output).toContain('SUMMARY:[MMS] Strategy (MMS5002)');
-	});
-
-	it('includes Program field in DESCRIPTION', () => {
-		const output = generateICSCalendar([makeCourse()], SP1_RANGES, 'Schedule', professorOptions);
-		expect(output).toContain('Program: MMS');
-	});
-
+describe('generateICSCalendar — instructor options', () => {
 	it('omits instructor in DESCRIPTION when includeInstructor is false', () => {
-		const output = generateICSCalendar([makeCourse()], SP1_RANGES, 'Schedule', professorOptions);
+		const output = generateICSCalendar([makeCourse()], SP1_RANGES, 'Schedule', { includeInstructor: false });
 		expect(output).not.toContain('Instructor:');
-	});
-
-	it('omits program prefix when program is "unknown"', () => {
-		const course = makeCourse({ program: 'unknown' });
-		const output = generateICSCalendar([course], SP1_RANGES, 'Schedule', professorOptions);
-		expect(output).not.toContain('[unknown]');
-		expect(output).toContain('SUMMARY:Strategy (MMS5002)');
 	});
 });
 
