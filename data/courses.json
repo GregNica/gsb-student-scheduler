@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "lastUpdated": "2026-03-22T07:25:57.137Z",
+  "lastUpdated": "2026-03-22T07:29:25.639Z",
   "semesters": {
     "sp1-2026": {
       "id": "sp1-2026",
@@ -19,10 +19,10 @@
           "label": "Sp1"
         }
       ],
-      "lastUpdated": "2026-03-22T07:25:57.137Z",
+      "lastUpdated": "2026-03-22T07:29:25.639Z",
       "courses": [
         {
-          "id": "pdf-gsb5206-mn1fnbna-8",
+          "id": "pdf-gsb5206-mn1fnq6c-43",
           "courseCode": "GSB5206",
           "courseTitle": "Marketing Strategy and Planning",
           "instructor": "Eric Shih",
@@ -67,7 +67,7 @@
           ]
         },
         {
-          "id": "pdf-gsb5225-mn1fnbna-2",
+          "id": "pdf-gsb5225-mn1fnq6c-37",
           "courseCode": "GSB5225",
           "courseTitle": "Capital Markets",
           "instructor": "Raunaq Pungaliya",
@@ -112,7 +112,7 @@
           ]
         },
         {
-          "id": "pdf-mms5002-mn1fnbnb-12",
+          "id": "pdf-mms5002-mn1fnq6c-47",
           "courseCode": "MMS5002",
           "courseTitle": "Brand Management",
           "instructor": "Minjung Koo",
@@ -157,7 +157,7 @@
           ]
         },
         {
-          "id": "pdf-mms5002-mn1fnbna-6",
+          "id": "pdf-mms5002-mn1fnq6c-41",
           "courseCode": "MMS5002",
           "courseTitle": "Brand Management",
           "instructor": "Minjung Koo",
@@ -202,7 +202,7 @@
           ]
         },
         {
-          "id": "pdf-mms5103-mn1fnbnb-16",
+          "id": "pdf-mms5103-mn1fnq6c-51",
           "courseCode": "MMS5103",
           "courseTitle": "Management Science and Decision Analytics",
           "instructor": "Frank Huettner",
@@ -247,7 +247,7 @@
           ]
         },
         {
-          "id": "pdf-gsb5212-mn1fnbna-4",
+          "id": "pdf-gsb5212-mn1fnq6c-39",
           "courseCode": "GSB5212",
           "courseTitle": "Management Science and Decision Analytics",
           "instructor": "Frank Huettner",
@@ -292,7 +292,7 @@
           ]
         },
         {
-          "id": "pdf-mms5100-mn1fnbnb-14",
+          "id": "pdf-mms5100-mn1fnq6c-49",
           "courseCode": "MMS5100",
           "courseTitle": "Business Korean(A)",
           "instructor": "Yeoshil Ma",
@@ -335,7 +335,7 @@
           ]
         },
         {
-          "id": "pdf-gsb5191-mn1fnbna-3",
+          "id": "pdf-gsb5191-mn1fnq6c-38",
           "courseCode": "GSB5191",
           "courseTitle": "Leadership and Career Development",
           "instructor": "Chris Sotomayor",
@@ -343,8 +343,8 @@
           "campus": "",
           "meetingSlots": [
             {
-              "day": "Monday",
-              "dayCode": "Mon",
+              "day": "Tuesday",
+              "dayCode": "Tue",
               "startTime": "17:10",
               "endTime": "18:50",
               "room": "9B114"
@@ -373,7 +373,7 @@
           ]
         },
         {
-          "id": "pdf-gsb5226-mn1fnbna-9",
+          "id": "pdf-gsb5226-mn1fnq6c-44",
           "courseCode": "GSB5226",
           "courseTitle": "Generative AI for Business",
           "instructor": "Yanbo Wang",
@@ -418,7 +418,7 @@
           ]
         },
         {
-          "id": "pdf-gsb5015-mn1fnbna-1",
+          "id": "pdf-gsb5015-mn1fnq6c-36",
           "courseCode": "GSB5015",
           "courseTitle": "Corporate Financial Strategy",
           "instructor": "Yanbo Wang",
@@ -463,7 +463,7 @@
           ]
         },
         {
-          "id": "pdf-mms5104-mn1fnbnb-13",
+          "id": "pdf-mms5104-mn1fnq6c-48",
           "courseCode": "MMS5104",
           "courseTitle": "Sustainable Supply Chain Management",
           "instructor": "Anthony Kim",
@@ -508,7 +508,7 @@
           ]
         },
         {
-          "id": "pdf-gsb5193-mn1fnbna-7",
+          "id": "pdf-gsb5193-mn1fnq6c-42",
           "courseCode": "GSB5193",
           "courseTitle": "Business Forecasting",
           "instructor": "Travers Child",
@@ -553,7 +553,7 @@
           ]
         },
         {
-          "id": "pdf-mms5009-mn1fnbnb-17",
+          "id": "pdf-mms5009-mn1fnq6c-52",
           "courseCode": "MMS5009",
           "courseTitle": "Entrepreneurship",
           "instructor": "Aleksios Gotsopoulos",
@@ -598,7 +598,7 @@
           ]
         },
         {
-          "id": "pdf-gsb5100-mn1fnbna-5",
+          "id": "pdf-gsb5100-mn1fnq6c-40",
           "courseCode": "GSB5100",
           "courseTitle": "Entrepreneurship",
           "instructor": "Aleksios Gotsopoulos",
@@ -643,7 +643,7 @@
           ]
         },
         {
-          "id": "pdf-businesskoreanb-mn1fnbnb-11",
+          "id": "pdf-businesskoreanb-mn1fnq6c-46",
           "courseCode": "",
           "courseTitle": "Business Korean(B)",
           "instructor": "Yeoshil Ma",
@@ -681,7 +681,7 @@
           ]
         },
         {
-          "id": "pdf-mms5100-mn1fnbnb-15",
+          "id": "pdf-mms5100-mn1fnq6c-50",
           "courseCode": "MMS5100",
           "courseTitle": "Business Korean(B)",
           "instructor": "Yeoshil Ma",
@@ -724,7 +724,7 @@
           ]
         },
         {
-          "id": "pdf-workshop-mn1fnbnb-10",
+          "id": "pdf-workshop-mn1fnq6c-45",
           "courseCode": "",
           "courseTitle": "Workshop",
           "instructor": "",
@@ -765,6 +765,39 @@
               "label": "Sp2"
             }
           ]
+        },
+        {
+          "id": "manual-1774164501597-j6cpr",
+          "courseCode": "",
+          "courseTitle": "Business Korean (A)",
+          "instructor": "Yeoshil Ma",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Wednesday",
+              "dayCode": "Wed",
+              "startTime": "17:10",
+              "endTime": "18:50",
+              "room": "9B114"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "17:10-18:50",
+          "program": "FMBA",
+          "dateRanges": [
+            {
+              "start": "2026-01-12",
+              "end": "2026-02-13",
+              "label": "Sp1"
+            }
+          ]
         }
       ]
     },
@@ -780,12 +813,12 @@
           "label": "SpIW1"
         }
       ],
-      "lastUpdated": "2026-03-22T07:25:57.137Z",
+      "lastUpdated": "2026-03-22T07:29:25.639Z",
       "courses": [
         {
-          "id": "pdf-gsb5187-mn1fnbnc-18",
+          "id": "pdf-gsb5187-mn1fnq6d-53",
           "courseCode": "GSB5187",
-          "courseTitle": "Social Value Strategy (Mar 2 - 6)",
+          "courseTitle": "Social Value Strategy ",
           "instructor": "Tai-Young Kim",
           "credits": "",
           "campus": "",
@@ -794,6 +827,13 @@
               "day": "Monday",
               "dayCode": "Mon",
               "startTime": "09:00",
+              "endTime": "11:45",
+              "room": "9B114"
+            },
+            {
+              "day": "Monday",
+              "dayCode": "Mon",
+              "startTime": "13:00",
               "endTime": "14:15",
               "room": "9B114"
             },
@@ -801,6 +841,13 @@
               "day": "Tuesday",
               "dayCode": "Tue",
               "startTime": "09:00",
+              "endTime": "11:45",
+              "room": "9B114"
+            },
+            {
+              "day": "Tuesday",
+              "dayCode": "Tue",
+              "startTime": "13:00",
               "endTime": "14:15",
               "room": "9B114"
             },
@@ -808,6 +855,13 @@
               "day": "Wednesday",
               "dayCode": "Wed",
               "startTime": "09:00",
+              "endTime": "11:45",
+              "room": "9B114"
+            },
+            {
+              "day": "Wednesday",
+              "dayCode": "Wed",
+              "startTime": "13:00",
               "endTime": "14:15",
               "room": "9B114"
             },
@@ -815,6 +869,13 @@
               "day": "Thursday",
               "dayCode": "Thu",
               "startTime": "09:00",
+              "endTime": "11:45",
+              "room": "9B114"
+            },
+            {
+              "day": "Thursday",
+              "dayCode": "Thu",
+              "startTime": "13:00",
               "endTime": "14:15",
               "room": "9B114"
             },
@@ -822,6 +883,13 @@
               "day": "Friday",
               "dayCode": "Fri",
               "startTime": "09:00",
+              "endTime": "11:45",
+              "room": "9B114"
+            },
+            {
+              "day": "Friday",
+              "dayCode": "Fri",
+              "startTime": "13:00",
               "endTime": "14:15",
               "room": "9B114"
             }
@@ -833,8 +901,104 @@
             0,
             0
           ],
-          "rawTimeRoom": "09:00-14:15",
+          "rawTimeRoom": "09:00-11:45, 13:00-14:15",
           "program": "FMBA",
+          "dateRanges": [
+            {
+              "start": "2026-03-02",
+              "end": "2026-03-06",
+              "label": "SpIW1"
+            }
+          ]
+        },
+        {
+          "id": "manual-1774164380082-9juxu",
+          "courseCode": "MMS5011",
+          "courseTitle": "Financial Risk Management",
+          "instructor": "Jae Ha Lee(",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Monday",
+              "dayCode": "Mon",
+              "startTime": "09:00",
+              "endTime": "11:45",
+              "room": "90104"
+            },
+            {
+              "day": "Monday",
+              "dayCode": "Mon",
+              "startTime": "13:00",
+              "endTime": "14:15",
+              "room": "90104"
+            },
+            {
+              "day": "Tuesday",
+              "dayCode": "Tue",
+              "startTime": "09:00",
+              "endTime": "11:45",
+              "room": "90104"
+            },
+            {
+              "day": "Tuesday",
+              "dayCode": "Tue",
+              "startTime": "13:00",
+              "endTime": "14:15",
+              "room": "90104"
+            },
+            {
+              "day": "Wednesday",
+              "dayCode": "Wed",
+              "startTime": "09:00",
+              "endTime": "11:45",
+              "room": "90104"
+            },
+            {
+              "day": "Wednesday",
+              "dayCode": "Wed",
+              "startTime": "13:00",
+              "endTime": "14:15",
+              "room": "90104"
+            },
+            {
+              "day": "Thursday",
+              "dayCode": "Thu",
+              "startTime": "09:00",
+              "endTime": "11:45",
+              "room": "90104"
+            },
+            {
+              "day": "Thursday",
+              "dayCode": "Thu",
+              "startTime": "13:00",
+              "endTime": "14:15",
+              "room": "90104"
+            },
+            {
+              "day": "Friday",
+              "dayCode": "Fri",
+              "startTime": "09:00",
+              "endTime": "11:45",
+              "room": "90104"
+            },
+            {
+              "day": "Friday",
+              "dayCode": "Fri",
+              "startTime": "13:00",
+              "endTime": "14:15",
+              "room": "90104"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "09:00-11:45, 13:00-14:15",
+          "program": "MMS",
           "dateRanges": [
             {
               "start": "2026-03-02",
@@ -857,12 +1021,12 @@
           "label": "SpIW2"
         }
       ],
-      "lastUpdated": "2026-03-22T07:25:57.137Z",
+      "lastUpdated": "2026-03-22T07:29:25.639Z",
       "courses": [
         {
-          "id": "pdf-gsb5214-mn1fnbnc-19",
+          "id": "pdf-gsb5214-mn1fnq6d-54",
           "courseCode": "GSB5214",
-          "courseTitle": "Sustainability Academy (Mar 16 - 20)",
+          "courseTitle": "Sustainability Academy ",
           "instructor": "Aleksios Gotsopoulos",
           "credits": "",
           "campus": "",
@@ -871,6 +1035,13 @@
               "day": "Monday",
               "dayCode": "Mon",
               "startTime": "09:00",
+              "endTime": "11:45",
+              "room": "9B114"
+            },
+            {
+              "day": "Monday",
+              "dayCode": "Mon",
+              "startTime": "13:00",
               "endTime": "14:15",
               "room": "9B114"
             },
@@ -878,6 +1049,13 @@
               "day": "Tuesday",
               "dayCode": "Tue",
               "startTime": "09:00",
+              "endTime": "11:45",
+              "room": "9B114"
+            },
+            {
+              "day": "Tuesday",
+              "dayCode": "Tue",
+              "startTime": "13:00",
               "endTime": "14:15",
               "room": "9B114"
             },
@@ -885,6 +1063,13 @@
               "day": "Wednesday",
               "dayCode": "Wed",
               "startTime": "09:00",
+              "endTime": "11:45",
+              "room": "9B114"
+            },
+            {
+              "day": "Wednesday",
+              "dayCode": "Wed",
+              "startTime": "13:00",
               "endTime": "14:15",
               "room": "9B114"
             },
@@ -892,6 +1077,13 @@
               "day": "Thursday",
               "dayCode": "Thu",
               "startTime": "09:00",
+              "endTime": "11:45",
+              "room": "9B114"
+            },
+            {
+              "day": "Thursday",
+              "dayCode": "Thu",
+              "startTime": "13:00",
               "endTime": "14:15",
               "room": "9B114"
             },
@@ -899,6 +1091,13 @@
               "day": "Friday",
               "dayCode": "Fri",
               "startTime": "09:00",
+              "endTime": "11:45",
+              "room": "9B114"
+            },
+            {
+              "day": "Friday",
+              "dayCode": "Fri",
+              "startTime": "13:00",
               "endTime": "14:15",
               "room": "9B114"
             }
@@ -910,7 +1109,7 @@
             0,
             0
           ],
-          "rawTimeRoom": "09:00-14:15",
+          "rawTimeRoom": "09:00-11:45, 13:00-14:15",
           "program": "FMBA",
           "dateRanges": [
             {
@@ -934,10 +1133,10 @@
           "label": "Sp2"
         }
       ],
-      "lastUpdated": "2026-03-22T07:25:57.137Z",
+      "lastUpdated": "2026-03-22T07:29:25.639Z",
       "courses": [
         {
-          "id": "pdf-gsb5171-mn1fnbnc-28",
+          "id": "pdf-gsb5171-mn1fnq6d-63",
           "courseCode": "GSB5171",
           "courseTitle": "Marketing Analytics",
           "instructor": "Xing Zhang",
@@ -977,7 +1176,7 @@
           ]
         },
         {
-          "id": "pdf-gsb5215-mn1fnbnc-22",
+          "id": "pdf-gsb5215-mn1fnq6d-57",
           "courseCode": "GSB5215",
           "courseTitle": "Customer Experience Management",
           "instructor": "Serim Hwang",
@@ -1017,7 +1216,7 @@
           ]
         },
         {
-          "id": "pdf-gsb5130-mn1fnbnc-24",
+          "id": "pdf-gsb5130-mn1fnq6d-59",
           "courseCode": "GSB5130",
           "courseTitle": "Managing Teams and Groups",
           "instructor": "Samah Shaffakat",
@@ -1057,7 +1256,7 @@
           ]
         },
         {
-          "id": "pdf-mms5013-mn1fnbnc-30",
+          "id": "pdf-mms5013-mn1fnq6d-65",
           "courseCode": "MMS5013",
           "courseTitle": "Customer Experience Management",
           "instructor": "Serim Hwang",
@@ -1097,7 +1296,7 @@
           ]
         },
         {
-          "id": "pdf-gsb5143-mn1fnbnc-26",
+          "id": "pdf-gsb5143-mn1fnq6d-61",
           "courseCode": "GSB5143",
           "courseTitle": "Operations Management",
           "instructor": "Frank Huettner",
@@ -1137,7 +1336,7 @@
           ]
         },
         {
-          "id": "pdf-gsb5210-mn1fnbnc-21",
+          "id": "pdf-gsb5210-mn1fnq6d-56",
           "courseCode": "GSB5210",
           "courseTitle": "Corporate Strategy in Korea",
           "instructor": "Jung-Hoon Han",
@@ -1177,7 +1376,7 @@
           ]
         },
         {
-          "id": "pdf-gsb5102-mn1fnbnc-23",
+          "id": "pdf-gsb5102-mn1fnq6d-58",
           "courseCode": "GSB5102",
           "courseTitle": "M&A and Corporate Restructuring",
           "instructor": "Yanbo Wang",
@@ -1217,7 +1416,7 @@
           ]
         },
         {
-          "id": "pdf-mms5105-mn1fnbnc-35",
+          "id": "pdf-mms5105-mn1fnq6d-70",
           "courseCode": "MMS5105",
           "courseTitle": "Innovation Strategy",
           "instructor": "Jung-Hoon Han",
@@ -1257,7 +1456,7 @@
           ]
         },
         {
-          "id": "pdf-gsb5019-mn1fnbnc-25",
+          "id": "pdf-gsb5019-mn1fnq6d-60",
           "courseCode": "GSB5019",
           "courseTitle": "Equity Markets and Valuation",
           "instructor": "Terence Lim",
@@ -1297,7 +1496,7 @@
           ]
         },
         {
-          "id": "pdf-mms5101-mn1fnbnc-31",
+          "id": "pdf-mms5101-mn1fnq6d-66",
           "courseCode": "MMS5101",
           "courseTitle": "AI and Machine Learning",
           "instructor": "Youngju Nielsen",
@@ -1337,7 +1536,7 @@
           ]
         },
         {
-          "id": "pdf-gsb5198-mn1fnbnc-27",
+          "id": "pdf-gsb5198-mn1fnq6d-62",
           "courseCode": "GSB5198",
           "courseTitle": "AI and Machine Learning",
           "instructor": "Youngju Nielsen",
@@ -1377,7 +1576,7 @@
           ]
         },
         {
-          "id": "pdf-mms5010-mn1fnbnc-32",
+          "id": "pdf-mms5010-mn1fnq6d-67",
           "courseCode": "MMS5010",
           "courseTitle": "Equity Markets and Valuation",
           "instructor": "Terence Lim",
