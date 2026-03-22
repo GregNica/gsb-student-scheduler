@@ -332,7 +332,7 @@
 
 		<!-- # Stats row -->
 		{#if stats}
-			<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+			<div class="grid grid-cols-2 gap-4 max-w-xs">
 				<Card class="p-4">
 					<div class="text-sm text-muted-foreground">Courses</div>
 					<div class="text-2xl font-bold">{stats.totalCourses}</div>
@@ -340,14 +340,6 @@
 				<Card class="p-4">
 					<div class="text-sm text-muted-foreground">Weekly Meetings</div>
 					<div class="text-2xl font-bold">{stats.totalMeetings}</div>
-				</Card>
-				<Card class="p-4 border-green-200 dark:border-green-800">
-					<div class="text-sm text-green-600 dark:text-green-400">High Confidence</div>
-					<div class="text-2xl font-bold text-green-600 dark:text-green-400">{stats.highConfidence}</div>
-				</Card>
-				<Card class="p-4 border-yellow-200 dark:border-yellow-800">
-					<div class="text-sm text-yellow-600 dark:text-yellow-400">Needs Review</div>
-					<div class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{stats.mediumConfidence + stats.lowConfidence}</div>
 				</Card>
 			</div>
 		{/if}
@@ -396,17 +388,7 @@
 								<h3 class="text-lg font-semibold truncate">{course.courseTitle || 'Untitled Course'}</h3>
 							{/if}
 
-							<!-- Confidence badge -->
-							<span class="text-xs px-2 py-0.5 rounded-full flex-shrink-0 {
-								course.confidence === 'high'
-									? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
-									: course.confidence === 'medium'
-										? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'
-										: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
-							}">
-								{course.confidence}
-							</span>
-						</div>
+							</div>
 
 						<div class="flex items-center gap-2 flex-shrink-0">
 							{#if isEditing}

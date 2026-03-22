@@ -172,6 +172,54 @@ export function addNewCourseToReview(course: Omit<ReviewedCourse, 'id'>): boolea
 	}
 }
 
+// / Store pre-selected courses directly from the pre-loaded course data
+// @ Used by the new course-selection flow (no file upload needed)
+// @ Bypasses the label-filtering of storeScheduleScanResults — student already chose their courses
+export function storePreSelectedCourses(
+	courses: ReviewedCourse[],
+	semesterLabel: string,
+	dateRanges: DateRange[]
+): boolean {
+	if (typeof window === 'undefined') return false;
+
+	try {
+		const totalMeetings = courses.reduce((n, c) => n + c.meetingSlots.length, 0);
+
+		const session: ScheduleReviewSession = {
+			scanResult: {
+				courses,
+				summary: {
+					totalCourses: courses.length,
+					highConfidence: courses.length,
+					mediumConfidence: 0,
+					lowConfidence: 0,
+					uniqueDays: [],
+					totalWeeklyMeetings: totalMeetings,
+				},
+				processedFile: {
+					name: 'Course Selection',
+					sheetName: 'Pre-loaded course data',
+					extractedRows: courses.length,
+					detectedBlocks: courses.length,
+				},
+			},
+			courses,
+			editedByUser: {},
+			semesterLabel,
+			semesterStart: dateRanges[0]?.start ?? '',
+			semesterEnd: dateRanges[0]?.end ?? '',
+			dateRanges,
+			timestamp: Date.now(),
+		};
+
+		sessionStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+		return true;
+	} catch (error) {
+		console.error('Error storing pre-selected courses:', error);
+		return false;
+	}
+}
+
 // / Clear the schedule review session
 // @ Borrowed from reviewStorage.ts clearReviewSession()
 export function clearScheduleReviewSession(): boolean {
