@@ -1,0 +1,1422 @@
+{
+  "version": 1,
+  "lastUpdated": "2026-03-22T07:25:57.137Z",
+  "semesters": {
+    "sp1-2026": {
+      "id": "sp1-2026",
+      "label": "Sp1",
+      "description": "Spring 1 (Jan 12 - Feb 27)",
+      "category": "Spring 2026",
+      "dateRanges": [
+        {
+          "start": "2026-01-12",
+          "end": "2026-02-13",
+          "label": "Sp1"
+        },
+        {
+          "start": "2026-02-23",
+          "end": "2026-02-27",
+          "label": "Sp1"
+        }
+      ],
+      "lastUpdated": "2026-03-22T07:25:57.137Z",
+      "courses": [
+        {
+          "id": "pdf-gsb5206-mn1fnbna-8",
+          "courseCode": "GSB5206",
+          "courseTitle": "Marketing Strategy and Planning",
+          "instructor": "Eric Shih",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Monday",
+              "dayCode": "Mon",
+              "startTime": "09:00",
+              "endTime": "10:40",
+              "room": "9B114"
+            },
+            {
+              "day": "Wednesday",
+              "dayCode": "Wed",
+              "startTime": "09:00",
+              "endTime": "10:40",
+              "room": "9B114"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "09:00-10:40",
+          "program": "FMBA",
+          "dateRanges": [
+            {
+              "start": "2026-01-12",
+              "end": "2026-02-15",
+              "label": "Sp1"
+            },
+            {
+              "start": "2026-02-21",
+              "end": "2026-02-27",
+              "label": "Sp1"
+            }
+          ]
+        },
+        {
+          "id": "pdf-gsb5225-mn1fnbna-2",
+          "courseCode": "GSB5225",
+          "courseTitle": "Capital Markets",
+          "instructor": "Raunaq Pungaliya",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Monday",
+              "dayCode": "Mon",
+              "startTime": "10:50",
+              "endTime": "12:30",
+              "room": "9B114"
+            },
+            {
+              "day": "Wednesday",
+              "dayCode": "Wed",
+              "startTime": "10:50",
+              "endTime": "12:30",
+              "room": "9B114"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "10:50-12:30",
+          "program": "FMBA",
+          "dateRanges": [
+            {
+              "start": "2026-01-12",
+              "end": "2026-02-15",
+              "label": "Sp1"
+            },
+            {
+              "start": "2026-02-21",
+              "end": "2026-02-27",
+              "label": "Sp1"
+            }
+          ]
+        },
+        {
+          "id": "pdf-mms5002-mn1fnbnb-12",
+          "courseCode": "MMS5002",
+          "courseTitle": "Brand Management",
+          "instructor": "Minjung Koo",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Monday",
+              "dayCode": "Mon",
+              "startTime": "10:50",
+              "endTime": "12:30",
+              "room": "90104"
+            },
+            {
+              "day": "Wednesday",
+              "dayCode": "Wed",
+              "startTime": "10:50",
+              "endTime": "12:30",
+              "room": "90104"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "10:50-12:30",
+          "program": "MMS",
+          "dateRanges": [
+            {
+              "start": "2026-01-12",
+              "end": "2026-02-15",
+              "label": "Sp1"
+            },
+            {
+              "start": "2026-02-21",
+              "end": "2026-02-27",
+              "label": "Sp1"
+            }
+          ]
+        },
+        {
+          "id": "pdf-mms5002-mn1fnbna-6",
+          "courseCode": "MMS5002",
+          "courseTitle": "Brand Management",
+          "instructor": "Minjung Koo",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Monday",
+              "dayCode": "Mon",
+              "startTime": "13:30",
+              "endTime": "15:10",
+              "room": "9B114"
+            },
+            {
+              "day": "Wednesday",
+              "dayCode": "Wed",
+              "startTime": "13:30",
+              "endTime": "15:10",
+              "room": "9B114"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "13:30-15:10",
+          "program": "FMBA",
+          "dateRanges": [
+            {
+              "start": "2026-01-12",
+              "end": "2026-02-15",
+              "label": "Sp1"
+            },
+            {
+              "start": "2026-02-21",
+              "end": "2026-02-27",
+              "label": "Sp1"
+            }
+          ]
+        },
+        {
+          "id": "pdf-mms5103-mn1fnbnb-16",
+          "courseCode": "MMS5103",
+          "courseTitle": "Management Science and Decision Analytics",
+          "instructor": "Frank Huettner",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Monday",
+              "dayCode": "Mon",
+              "startTime": "13:30",
+              "endTime": "15:10",
+              "room": "90104"
+            },
+            {
+              "day": "Wednesday",
+              "dayCode": "Wed",
+              "startTime": "13:30",
+              "endTime": "15:10",
+              "room": "90104"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "13:30-15:10",
+          "program": "MMS",
+          "dateRanges": [
+            {
+              "start": "2026-01-12",
+              "end": "2026-02-15",
+              "label": "Sp1"
+            },
+            {
+              "start": "2026-02-21",
+              "end": "2026-02-27",
+              "label": "Sp1"
+            }
+          ]
+        },
+        {
+          "id": "pdf-gsb5212-mn1fnbna-4",
+          "courseCode": "GSB5212",
+          "courseTitle": "Management Science and Decision Analytics",
+          "instructor": "Frank Huettner",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Monday",
+              "dayCode": "Mon",
+              "startTime": "15:20",
+              "endTime": "17:00",
+              "room": "9B114"
+            },
+            {
+              "day": "Wednesday",
+              "dayCode": "Wed",
+              "startTime": "15:20",
+              "endTime": "17:00",
+              "room": "9B114"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "15:20-17:00",
+          "program": "FMBA",
+          "dateRanges": [
+            {
+              "start": "2026-01-12",
+              "end": "2026-02-15",
+              "label": "Sp1"
+            },
+            {
+              "start": "2026-02-21",
+              "end": "2026-02-27",
+              "label": "Sp1"
+            }
+          ]
+        },
+        {
+          "id": "pdf-mms5100-mn1fnbnb-14",
+          "courseCode": "MMS5100",
+          "courseTitle": "Business Korean(A)",
+          "instructor": "Yeoshil Ma",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Monday",
+              "dayCode": "Mon",
+              "startTime": "15:20",
+              "endTime": "17:00",
+              "room": "90104"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "15:20-17:00",
+          "program": "MMS",
+          "dateRanges": [
+            {
+              "start": "2026-01-12",
+              "end": "2026-02-15",
+              "label": "Sp1"
+            },
+            {
+              "start": "2026-02-21",
+              "end": "2026-02-27",
+              "label": "Sp1"
+            },
+            {
+              "start": "2026-03-23",
+              "end": "2026-05-01",
+              "label": "Sp2"
+            }
+          ]
+        },
+        {
+          "id": "pdf-gsb5191-mn1fnbna-3",
+          "courseCode": "GSB5191",
+          "courseTitle": "Leadership and Career Development",
+          "instructor": "Chris Sotomayor",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Monday",
+              "dayCode": "Mon",
+              "startTime": "17:10",
+              "endTime": "18:50",
+              "room": "9B114"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "17:10-18:50",
+          "program": "FMBA",
+          "dateRanges": [
+            {
+              "start": "2026-01-12",
+              "end": "2026-02-15",
+              "label": "Sp1"
+            },
+            {
+              "start": "2026-02-21",
+              "end": "2026-02-27",
+              "label": "Sp1"
+            }
+          ]
+        },
+        {
+          "id": "pdf-gsb5226-mn1fnbna-9",
+          "courseCode": "GSB5226",
+          "courseTitle": "Generative AI for Business",
+          "instructor": "Yanbo Wang",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Tuesday",
+              "dayCode": "Tue",
+              "startTime": "09:00",
+              "endTime": "10:40",
+              "room": "9B114"
+            },
+            {
+              "day": "Thursday",
+              "dayCode": "Thu",
+              "startTime": "09:00",
+              "endTime": "10:40",
+              "room": "9B114"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "09:00-10:40",
+          "program": "FMBA",
+          "dateRanges": [
+            {
+              "start": "2026-01-12",
+              "end": "2026-02-15",
+              "label": "Sp1"
+            },
+            {
+              "start": "2026-02-21",
+              "end": "2026-02-27",
+              "label": "Sp1"
+            }
+          ]
+        },
+        {
+          "id": "pdf-gsb5015-mn1fnbna-1",
+          "courseCode": "GSB5015",
+          "courseTitle": "Corporate Financial Strategy",
+          "instructor": "Yanbo Wang",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Tuesday",
+              "dayCode": "Tue",
+              "startTime": "10:50",
+              "endTime": "12:30",
+              "room": "9B114"
+            },
+            {
+              "day": "Thursday",
+              "dayCode": "Thu",
+              "startTime": "10:50",
+              "endTime": "12:30",
+              "room": "9B114"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "10:50-12:30",
+          "program": "FMBA",
+          "dateRanges": [
+            {
+              "start": "2026-01-12",
+              "end": "2026-02-15",
+              "label": "Sp1"
+            },
+            {
+              "start": "2026-02-21",
+              "end": "2026-02-27",
+              "label": "Sp1"
+            }
+          ]
+        },
+        {
+          "id": "pdf-mms5104-mn1fnbnb-13",
+          "courseCode": "MMS5104",
+          "courseTitle": "Sustainable Supply Chain Management",
+          "instructor": "Anthony Kim",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Tuesday",
+              "dayCode": "Tue",
+              "startTime": "10:50",
+              "endTime": "12:30",
+              "room": "90104"
+            },
+            {
+              "day": "Thursday",
+              "dayCode": "Thu",
+              "startTime": "10:50",
+              "endTime": "12:30",
+              "room": "90104"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "10:50-12:30",
+          "program": "MMS",
+          "dateRanges": [
+            {
+              "start": "2026-01-12",
+              "end": "2026-02-15",
+              "label": "Sp1"
+            },
+            {
+              "start": "2026-02-21",
+              "end": "2026-02-27",
+              "label": "Sp1"
+            }
+          ]
+        },
+        {
+          "id": "pdf-gsb5193-mn1fnbna-7",
+          "courseCode": "GSB5193",
+          "courseTitle": "Business Forecasting",
+          "instructor": "Travers Child",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Tuesday",
+              "dayCode": "Tue",
+              "startTime": "13:30",
+              "endTime": "15:10",
+              "room": "9B114"
+            },
+            {
+              "day": "Thursday",
+              "dayCode": "Thu",
+              "startTime": "13:30",
+              "endTime": "15:10",
+              "room": "9B114"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "13:30-15:10",
+          "program": "FMBA",
+          "dateRanges": [
+            {
+              "start": "2026-01-12",
+              "end": "2026-02-15",
+              "label": "Sp1"
+            },
+            {
+              "start": "2026-02-21",
+              "end": "2026-02-27",
+              "label": "Sp1"
+            }
+          ]
+        },
+        {
+          "id": "pdf-mms5009-mn1fnbnb-17",
+          "courseCode": "MMS5009",
+          "courseTitle": "Entrepreneurship",
+          "instructor": "Aleksios Gotsopoulos",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Tuesday",
+              "dayCode": "Tue",
+              "startTime": "13:30",
+              "endTime": "15:10",
+              "room": "90104"
+            },
+            {
+              "day": "Thursday",
+              "dayCode": "Thu",
+              "startTime": "13:30",
+              "endTime": "15:10",
+              "room": "90104"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "13:30-15:10",
+          "program": "MMS",
+          "dateRanges": [
+            {
+              "start": "2026-01-12",
+              "end": "2026-02-15",
+              "label": "Sp1"
+            },
+            {
+              "start": "2026-02-21",
+              "end": "2026-02-27",
+              "label": "Sp1"
+            }
+          ]
+        },
+        {
+          "id": "pdf-gsb5100-mn1fnbna-5",
+          "courseCode": "GSB5100",
+          "courseTitle": "Entrepreneurship",
+          "instructor": "Aleksios Gotsopoulos",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Tuesday",
+              "dayCode": "Tue",
+              "startTime": "15:20",
+              "endTime": "17:00",
+              "room": "9B114"
+            },
+            {
+              "day": "Thursday",
+              "dayCode": "Thu",
+              "startTime": "15:20",
+              "endTime": "17:00",
+              "room": "9B114"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "15:20-17:00",
+          "program": "FMBA",
+          "dateRanges": [
+            {
+              "start": "2026-01-12",
+              "end": "2026-02-15",
+              "label": "Sp1"
+            },
+            {
+              "start": "2026-02-21",
+              "end": "2026-02-27",
+              "label": "Sp1"
+            }
+          ]
+        },
+        {
+          "id": "pdf-businesskoreanb-mn1fnbnb-11",
+          "courseCode": "",
+          "courseTitle": "Business Korean(B)",
+          "instructor": "Yeoshil Ma",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Tuesday",
+              "dayCode": "Tue",
+              "startTime": "17:10",
+              "endTime": "18:50",
+              "room": "9B114"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "17:10-18:50",
+          "program": "FMBA",
+          "dateRanges": [
+            {
+              "start": "2026-01-12",
+              "end": "2026-02-15",
+              "label": "Sp1"
+            },
+            {
+              "start": "2026-02-21",
+              "end": "2026-02-27",
+              "label": "Sp1"
+            }
+          ]
+        },
+        {
+          "id": "pdf-mms5100-mn1fnbnb-15",
+          "courseCode": "MMS5100",
+          "courseTitle": "Business Korean(B)",
+          "instructor": "Yeoshil Ma",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Wednesday",
+              "dayCode": "Wed",
+              "startTime": "15:20",
+              "endTime": "17:00",
+              "room": "90104"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "15:20-17:00",
+          "program": "MMS",
+          "dateRanges": [
+            {
+              "start": "2026-01-12",
+              "end": "2026-02-15",
+              "label": "Sp1"
+            },
+            {
+              "start": "2026-02-21",
+              "end": "2026-02-27",
+              "label": "Sp1"
+            },
+            {
+              "start": "2026-03-23",
+              "end": "2026-05-01",
+              "label": "Sp2"
+            }
+          ]
+        },
+        {
+          "id": "pdf-workshop-mn1fnbnb-10",
+          "courseCode": "",
+          "courseTitle": "Workshop",
+          "instructor": "",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Friday",
+              "dayCode": "Fri",
+              "startTime": "09:00",
+              "endTime": "12:30",
+              "room": "9B114"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "09:00-12:30",
+          "program": "FMBA",
+          "dateRanges": [
+            {
+              "start": "2026-01-12",
+              "end": "2026-02-15",
+              "label": "Sp1"
+            },
+            {
+              "start": "2026-02-21",
+              "end": "2026-02-27",
+              "label": "Sp1"
+            },
+            {
+              "start": "2026-03-23",
+              "end": "2026-05-01",
+              "label": "Sp2"
+            }
+          ]
+        }
+      ]
+    },
+    "spiw1-2026": {
+      "id": "spiw1-2026",
+      "label": "SpIW1",
+      "description": "Spring Intensive Week 1 (Mar 2 - 6)",
+      "category": "Spring 2026",
+      "dateRanges": [
+        {
+          "start": "2026-03-02",
+          "end": "2026-03-06",
+          "label": "SpIW1"
+        }
+      ],
+      "lastUpdated": "2026-03-22T07:25:57.137Z",
+      "courses": [
+        {
+          "id": "pdf-gsb5187-mn1fnbnc-18",
+          "courseCode": "GSB5187",
+          "courseTitle": "Social Value Strategy (Mar 2 - 6)",
+          "instructor": "Tai-Young Kim",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Monday",
+              "dayCode": "Mon",
+              "startTime": "09:00",
+              "endTime": "14:15",
+              "room": "9B114"
+            },
+            {
+              "day": "Tuesday",
+              "dayCode": "Tue",
+              "startTime": "09:00",
+              "endTime": "14:15",
+              "room": "9B114"
+            },
+            {
+              "day": "Wednesday",
+              "dayCode": "Wed",
+              "startTime": "09:00",
+              "endTime": "14:15",
+              "room": "9B114"
+            },
+            {
+              "day": "Thursday",
+              "dayCode": "Thu",
+              "startTime": "09:00",
+              "endTime": "14:15",
+              "room": "9B114"
+            },
+            {
+              "day": "Friday",
+              "dayCode": "Fri",
+              "startTime": "09:00",
+              "endTime": "14:15",
+              "room": "9B114"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "09:00-14:15",
+          "program": "FMBA",
+          "dateRanges": [
+            {
+              "start": "2026-03-02",
+              "end": "2026-03-06",
+              "label": "SpIW1"
+            }
+          ]
+        }
+      ]
+    },
+    "spiw2-2026": {
+      "id": "spiw2-2026",
+      "label": "SpIW2",
+      "description": "Spring Intensive Week 2 (Mar 16 - 20)",
+      "category": "Spring 2026",
+      "dateRanges": [
+        {
+          "start": "2026-03-16",
+          "end": "2026-03-20",
+          "label": "SpIW2"
+        }
+      ],
+      "lastUpdated": "2026-03-22T07:25:57.137Z",
+      "courses": [
+        {
+          "id": "pdf-gsb5214-mn1fnbnc-19",
+          "courseCode": "GSB5214",
+          "courseTitle": "Sustainability Academy (Mar 16 - 20)",
+          "instructor": "Aleksios Gotsopoulos",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Monday",
+              "dayCode": "Mon",
+              "startTime": "09:00",
+              "endTime": "14:15",
+              "room": "9B114"
+            },
+            {
+              "day": "Tuesday",
+              "dayCode": "Tue",
+              "startTime": "09:00",
+              "endTime": "14:15",
+              "room": "9B114"
+            },
+            {
+              "day": "Wednesday",
+              "dayCode": "Wed",
+              "startTime": "09:00",
+              "endTime": "14:15",
+              "room": "9B114"
+            },
+            {
+              "day": "Thursday",
+              "dayCode": "Thu",
+              "startTime": "09:00",
+              "endTime": "14:15",
+              "room": "9B114"
+            },
+            {
+              "day": "Friday",
+              "dayCode": "Fri",
+              "startTime": "09:00",
+              "endTime": "14:15",
+              "room": "9B114"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "09:00-14:15",
+          "program": "FMBA",
+          "dateRanges": [
+            {
+              "start": "2026-03-16",
+              "end": "2026-03-20",
+              "label": "SpIW2"
+            }
+          ]
+        }
+      ]
+    },
+    "sp2-2026": {
+      "id": "sp2-2026",
+      "label": "Sp2",
+      "description": "Spring 2 (Mar 23 - May 1)",
+      "category": "Spring 2026",
+      "dateRanges": [
+        {
+          "start": "2026-03-23",
+          "end": "2026-05-01",
+          "label": "Sp2"
+        }
+      ],
+      "lastUpdated": "2026-03-22T07:25:57.137Z",
+      "courses": [
+        {
+          "id": "pdf-gsb5171-mn1fnbnc-28",
+          "courseCode": "GSB5171",
+          "courseTitle": "Marketing Analytics",
+          "instructor": "Xing Zhang",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Monday",
+              "dayCode": "Mon",
+              "startTime": "09:00",
+              "endTime": "10:40",
+              "room": "9B114"
+            },
+            {
+              "day": "Wednesday",
+              "dayCode": "Wed",
+              "startTime": "09:00",
+              "endTime": "10:40",
+              "room": "9B114"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "09:00-10:40",
+          "program": "FMBA",
+          "dateRanges": [
+            {
+              "start": "2026-03-23",
+              "end": "2026-05-01",
+              "label": "Sp2"
+            }
+          ]
+        },
+        {
+          "id": "pdf-gsb5215-mn1fnbnc-22",
+          "courseCode": "GSB5215",
+          "courseTitle": "Customer Experience Management",
+          "instructor": "Serim Hwang",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Monday",
+              "dayCode": "Mon",
+              "startTime": "10:50",
+              "endTime": "12:30",
+              "room": "9B114"
+            },
+            {
+              "day": "Wednesday",
+              "dayCode": "Wed",
+              "startTime": "10:50",
+              "endTime": "12:30",
+              "room": "9B114"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "10:50-12:30",
+          "program": "FMBA",
+          "dateRanges": [
+            {
+              "start": "2026-03-23",
+              "end": "2026-05-01",
+              "label": "Sp2"
+            }
+          ]
+        },
+        {
+          "id": "pdf-gsb5130-mn1fnbnc-24",
+          "courseCode": "GSB5130",
+          "courseTitle": "Managing Teams and Groups",
+          "instructor": "Samah Shaffakat",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Monday",
+              "dayCode": "Mon",
+              "startTime": "13:30",
+              "endTime": "15:10",
+              "room": "9B114"
+            },
+            {
+              "day": "Wednesday",
+              "dayCode": "Wed",
+              "startTime": "13:30",
+              "endTime": "15:10",
+              "room": "9B114"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "13:30-15:10",
+          "program": "FMBA",
+          "dateRanges": [
+            {
+              "start": "2026-03-23",
+              "end": "2026-05-01",
+              "label": "Sp2"
+            }
+          ]
+        },
+        {
+          "id": "pdf-mms5013-mn1fnbnc-30",
+          "courseCode": "MMS5013",
+          "courseTitle": "Customer Experience Management",
+          "instructor": "Serim Hwang",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Monday",
+              "dayCode": "Mon",
+              "startTime": "13:30",
+              "endTime": "15:10",
+              "room": "90104"
+            },
+            {
+              "day": "Wednesday",
+              "dayCode": "Wed",
+              "startTime": "13:30",
+              "endTime": "15:10",
+              "room": "90104"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "13:30-15:10",
+          "program": "MMS",
+          "dateRanges": [
+            {
+              "start": "2026-03-23",
+              "end": "2026-05-01",
+              "label": "Sp2"
+            }
+          ]
+        },
+        {
+          "id": "pdf-gsb5143-mn1fnbnc-26",
+          "courseCode": "GSB5143",
+          "courseTitle": "Operations Management",
+          "instructor": "Frank Huettner",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Monday",
+              "dayCode": "Mon",
+              "startTime": "15:20",
+              "endTime": "17:00",
+              "room": "9B114"
+            },
+            {
+              "day": "Wednesday",
+              "dayCode": "Wed",
+              "startTime": "15:20",
+              "endTime": "17:00",
+              "room": "9B114"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "15:20-17:00",
+          "program": "FMBA",
+          "dateRanges": [
+            {
+              "start": "2026-03-23",
+              "end": "2026-05-01",
+              "label": "Sp2"
+            }
+          ]
+        },
+        {
+          "id": "pdf-gsb5210-mn1fnbnc-21",
+          "courseCode": "GSB5210",
+          "courseTitle": "Corporate Strategy in Korea",
+          "instructor": "Jung-Hoon Han",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Tuesday",
+              "dayCode": "Tue",
+              "startTime": "09:00",
+              "endTime": "10:40",
+              "room": "9B114"
+            },
+            {
+              "day": "Thursday",
+              "dayCode": "Thu",
+              "startTime": "09:00",
+              "endTime": "10:40",
+              "room": "9B114"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "09:00-10:40",
+          "program": "FMBA",
+          "dateRanges": [
+            {
+              "start": "2026-03-23",
+              "end": "2026-05-01",
+              "label": "Sp2"
+            }
+          ]
+        },
+        {
+          "id": "pdf-gsb5102-mn1fnbnc-23",
+          "courseCode": "GSB5102",
+          "courseTitle": "M&A and Corporate Restructuring",
+          "instructor": "Yanbo Wang",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Tuesday",
+              "dayCode": "Tue",
+              "startTime": "10:50",
+              "endTime": "12:30",
+              "room": "9B114"
+            },
+            {
+              "day": "Thursday",
+              "dayCode": "Thu",
+              "startTime": "10:50",
+              "endTime": "12:30",
+              "room": "9B114"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "10:50-12:30",
+          "program": "FMBA",
+          "dateRanges": [
+            {
+              "start": "2026-03-23",
+              "end": "2026-05-01",
+              "label": "Sp2"
+            }
+          ]
+        },
+        {
+          "id": "pdf-mms5105-mn1fnbnc-35",
+          "courseCode": "MMS5105",
+          "courseTitle": "Innovation Strategy",
+          "instructor": "Jung-Hoon Han",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Tuesday",
+              "dayCode": "Tue",
+              "startTime": "10:50",
+              "endTime": "12:30",
+              "room": "90104"
+            },
+            {
+              "day": "Thursday",
+              "dayCode": "Thu",
+              "startTime": "10:50",
+              "endTime": "12:30",
+              "room": "90104"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "10:50-12:30",
+          "program": "MMS",
+          "dateRanges": [
+            {
+              "start": "2026-03-23",
+              "end": "2026-05-01",
+              "label": "Sp2"
+            }
+          ]
+        },
+        {
+          "id": "pdf-gsb5019-mn1fnbnc-25",
+          "courseCode": "GSB5019",
+          "courseTitle": "Equity Markets and Valuation",
+          "instructor": "Terence Lim",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Tuesday",
+              "dayCode": "Tue",
+              "startTime": "13:30",
+              "endTime": "15:10",
+              "room": "9B114"
+            },
+            {
+              "day": "Thursday",
+              "dayCode": "Thu",
+              "startTime": "13:30",
+              "endTime": "15:10",
+              "room": "9B114"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "13:30-15:10",
+          "program": "FMBA",
+          "dateRanges": [
+            {
+              "start": "2026-03-23",
+              "end": "2026-05-01",
+              "label": "Sp2"
+            }
+          ]
+        },
+        {
+          "id": "pdf-mms5101-mn1fnbnc-31",
+          "courseCode": "MMS5101",
+          "courseTitle": "AI and Machine Learning",
+          "instructor": "Youngju Nielsen",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Tuesday",
+              "dayCode": "Tue",
+              "startTime": "13:30",
+              "endTime": "15:10",
+              "room": "90104"
+            },
+            {
+              "day": "Thursday",
+              "dayCode": "Thu",
+              "startTime": "13:30",
+              "endTime": "15:10",
+              "room": "90104"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "13:30-15:10",
+          "program": "MMS",
+          "dateRanges": [
+            {
+              "start": "2026-03-23",
+              "end": "2026-05-01",
+              "label": "Sp2"
+            }
+          ]
+        },
+        {
+          "id": "pdf-gsb5198-mn1fnbnc-27",
+          "courseCode": "GSB5198",
+          "courseTitle": "AI and Machine Learning",
+          "instructor": "Youngju Nielsen",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Tuesday",
+              "dayCode": "Tue",
+              "startTime": "15:20",
+              "endTime": "17:00",
+              "room": "9B114"
+            },
+            {
+              "day": "Thursday",
+              "dayCode": "Thu",
+              "startTime": "15:20",
+              "endTime": "17:00",
+              "room": "9B114"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "15:20-17:00",
+          "program": "FMBA",
+          "dateRanges": [
+            {
+              "start": "2026-03-23",
+              "end": "2026-05-01",
+              "label": "Sp2"
+            }
+          ]
+        },
+        {
+          "id": "pdf-mms5010-mn1fnbnc-32",
+          "courseCode": "MMS5010",
+          "courseTitle": "Equity Markets and Valuation",
+          "instructor": "Terence Lim",
+          "credits": "",
+          "campus": "",
+          "meetingSlots": [
+            {
+              "day": "Tuesday",
+              "dayCode": "Tue",
+              "startTime": "15:20",
+              "endTime": "17:00",
+              "room": "90104"
+            },
+            {
+              "day": "Thursday",
+              "dayCode": "Thu",
+              "startTime": "15:20",
+              "endTime": "17:00",
+              "room": "90104"
+            }
+          ],
+          "confidence": "high",
+          "reasons": [],
+          "sourceRows": [
+            0,
+            0,
+            0
+          ],
+          "rawTimeRoom": "15:20-17:00",
+          "program": "MMS",
+          "dateRanges": [
+            {
+              "start": "2026-03-23",
+              "end": "2026-05-01",
+              "label": "Sp2"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
