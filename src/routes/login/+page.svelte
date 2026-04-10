@@ -8,7 +8,16 @@
 		error = '';
 		loading = true;
 		try {
-			await authClient.signIn.social({ provider: 'google', callbackURL: '/setup' });
+			const result = await authClient.signIn.social({
+				provider: 'google',
+				callbackURL: '/setup'
+			});
+			if (result?.error) {
+				error = result.error.message ?? 'Sign in failed. Please try again.';
+				loading = false;
+			} else if (result?.data?.url) {
+				window.location.href = result.data.url;
+			}
 		} catch (e: any) {
 			error = e?.message ?? 'Sign in failed. Please try again.';
 			loading = false;
