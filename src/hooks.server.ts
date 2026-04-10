@@ -6,7 +6,7 @@ import { user as userTable } from '$lib/db/schema';
 import { eq } from 'drizzle-orm';
 import { env } from '$env/dynamic/private';
 
-const PUBLIC_PATHS = ['/login', '/api/auth', '/access-denied'];
+const PUBLIC_PATHS = ['/login', '/api/auth', '/access-denied', '/api/health'];
 
 export async function handle({ event, resolve }) {
 	const auth = getAuth({
