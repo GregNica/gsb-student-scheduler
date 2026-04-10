@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { authClient } from '$lib/auth-client';
 
 	let error = $state('');
 	let loading = $state(false);
@@ -8,16 +7,28 @@
 		error = '';
 		loading = true;
 		try {
-			const result = await authClient.signIn.social({
-				provider: 'google',
-				callbackURL: '/setup'
+			const resp = await fetch('/api/auth/sign-in/social', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ provider: 'google', callbackURL: '/setup' }),
+				redirect: 'manual'
 			});
-			if (result?.error) {
-				error = result.error.message ?? 'Sign in failed. Please try again.';
-				loading = false;
-			} else if (result?.data?.url) {
-				window.location.href = result.data.url;
+
+			// 302/307 redirect — extract Location and navigate
+			if (resp.type === 'opaqueredirect' || resp.status === 302 || resp.status === 307) {
+				const location = resp.headers.get('location');
+				if (location) { window.location.href = location; return; }
 			}
+
+			// JSON response with url field
+			if (resp.ok) {
+				const data = await resp.json().catch(() => null);
+				if (data?.url) { window.location.href = data.url; return; }
+				if (data?.redirect) { window.location.href = data.redirect; return; }
+			}
+
+			error = `Unexpected response (${resp.status}). Please try again.`;
+			loading = false;
 		} catch (e: any) {
 			error = e?.message ?? 'Sign in failed. Please try again.';
 			loading = false;
