@@ -1,9 +1,11 @@
 import { getDb } from '$lib/db';
+import { getAuth } from '$lib/auth';
 import { env } from '$env/dynamic/private';
 import { json } from '@sveltejs/kit';
 import { sql } from 'drizzle-orm';
+import type { RequestEvent } from '@sveltejs/kit';
 
-export async function GET() {
+export async function GET(event: RequestEvent) {
 	const results: Record<string, string> = {};
 
 	results.DATABASE_URL = env.DATABASE_URL ? 'set' : 'MISSING';
@@ -18,6 +20,30 @@ export async function GET() {
 		results.db = 'connected';
 	} catch (e: any) {
 		results.db = 'error: ' + e.message;
+	}
+
+	// Test better-auth sign-in/social directly
+	try {
+		const auth = getAuth({
+			DATABASE_URL: env.DATABASE_URL,
+			GOOGLE_CLIENT_ID: env.GOOGLE_CLIENT_ID,
+			GOOGLE_CLIENT_SECRET: env.GOOGLE_CLIENT_SECRET,
+			BETTER_AUTH_SECRET: env.BETTER_AUTH_SECRET
+		});
+		const origin = event.url.origin;
+		const req = new Request(`${origin}/api/auth/sign-in/social`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'Origin': origin
+			},
+			body: JSON.stringify({ provider: 'google', callbackURL: '/setup' })
+		});
+		const resp = await auth.handler(req);
+		const body = await resp.text();
+		results.auth_test = `status=${resp.status} body=${body.substring(0, 300)}`;
+	} catch (e: any) {
+		results.auth_test = 'threw: ' + e.message + ' | ' + e.stack?.split('\n')[1];
 	}
 
 	return json(results);
