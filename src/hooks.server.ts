@@ -1,14 +1,21 @@
-import { auth } from '$lib/auth';
+import { getAuth } from '$lib/auth';
 import { svelteKitHandler } from 'better-auth/svelte-kit';
 import { redirect } from '@sveltejs/kit';
-import { db } from '$lib/db';
+import { getDb } from '$lib/db';
 import { user as userTable } from '$lib/db/schema';
 import { eq } from 'drizzle-orm';
-import { ADMIN_EMAIL } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 
 const PUBLIC_PATHS = ['/login', '/api/auth', '/access-denied'];
 
 export async function handle({ event, resolve }) {
+	const auth = getAuth({
+		DATABASE_URL: env.DATABASE_URL,
+		GOOGLE_CLIENT_ID: env.GOOGLE_CLIENT_ID,
+		GOOGLE_CLIENT_SECRET: env.GOOGLE_CLIENT_SECRET,
+		BETTER_AUTH_SECRET: env.BETTER_AUTH_SECRET
+	});
+
 	// Let BetterAuth handle its own API routes
 	if (event.url.pathname.startsWith('/api/auth')) {
 		return svelteKitHandler({ event, resolve, auth });
@@ -28,9 +35,11 @@ export async function handle({ event, resolve }) {
 
 	if (session) {
 		const email = session.user.email;
+		const db = getDb(env.DATABASE_URL);
+		const adminEmail = env.ADMIN_EMAIL;
 
 		// Auto-create admin account on first login if email matches ADMIN_EMAIL
-		if (email === ADMIN_EMAIL) {
+		if (email === adminEmail) {
 			const existing = await db.select().from(userTable).where(eq(userTable.email, email));
 			if (existing.length === 0) {
 				await db.insert(userTable).values({
@@ -47,7 +56,6 @@ export async function handle({ event, resolve }) {
 			// Check if this user is in the database
 			const existing = await db.select().from(userTable).where(eq(userTable.email, email));
 			if (existing.length === 0) {
-				// Not in the database — deny access
 				redirect(302, '/access-denied');
 			}
 			event.locals.user = { ...session.user, role: existing[0].role } as any;

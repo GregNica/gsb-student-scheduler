@@ -1,7 +1,15 @@
 import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
-import { DATABASE_URL } from '$env/static/private';
 import * as schema from './schema';
 
-const sql = neon(DATABASE_URL);
-export const db = drizzle(sql, { schema });
+let _db: ReturnType<typeof drizzle> | null = null;
+
+export function getDb(databaseUrl?: string) {
+	if (!_db) {
+		const url = databaseUrl ?? process.env.DATABASE_URL;
+		if (!url) throw new Error('DATABASE_URL is not set');
+		const sql = neon(url);
+		_db = drizzle(sql, { schema });
+	}
+	return _db;
+}
