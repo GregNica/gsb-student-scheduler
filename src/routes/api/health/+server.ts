@@ -18,8 +18,21 @@ export async function GET(event: RequestEvent) {
 		const db = getDb(env.DATABASE_URL);
 		await db.execute(sql`SELECT 1`);
 		results.db = 'connected';
+
+		// List all tables
+		const tables = await db.execute(
+			sql`SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' ORDER BY table_name`
+		);
+		results.tables = (tables.rows as any[]).map((r) => r.table_name).join(', ');
+
+		// Test write to verification table
+		await db.execute(
+			sql`INSERT INTO verification (id, identifier, value, expires_at) VALUES ('health-test', 'test', 'test', NOW() + interval '1 minute') ON CONFLICT (id) DO NOTHING`
+		);
+		await db.execute(sql`DELETE FROM verification WHERE id = 'health-test'`);
+		results.verification_write = 'ok';
 	} catch (e: any) {
-		results.db = 'error: ' + e.message;
+		results.db_error = e.message;
 	}
 
 	// Test better-auth sign-in/social directly
@@ -35,7 +48,7 @@ export async function GET(event: RequestEvent) {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				'Origin': origin
+				Origin: origin
 			},
 			body: JSON.stringify({ provider: 'google', callbackURL: '/setup' })
 		});
