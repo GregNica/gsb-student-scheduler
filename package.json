@@ -25,6 +25,7 @@
         "@vitest/coverage-v8": "^3.2.4",
         "bits-ui": "^2.15.4",
         "clsx": "^2.1.1",
+        "drizzle-kit": "^0.31.10",
         "embla-carousel-svelte": "^8.6.0",
         "layerchart": "2.0.0-next.43",
         "mode-watcher": "^1.1.0",
@@ -53,6 +54,8 @@
         ]
     },
     "dependencies": {
+        "@neondatabase/serverless": "^1.0.2",
+        "drizzle-orm": "^0.45.2",
         "pdfjs-dist": "^5.4.624",
         "xlsx": "^0.18.5"
     }
