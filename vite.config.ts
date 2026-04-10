@@ -17,6 +17,6 @@ export default defineConfig({
         assetsInlineLimit: Infinity,
     },
     ssr: {
-        noExternal: true,
+        noExternal: ['better-auth', '@neondatabase/serverless', 'drizzle-orm'],
     },
 });
