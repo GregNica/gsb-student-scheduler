@@ -4,8 +4,14 @@
     import ScheduleProgressBar from "$lib/components/schedule-progress-bar.svelte";
     import ExternalLink from "@lucide/svelte/icons/external-link";
     import Mail from "@lucide/svelte/icons/mail";
+    import { authClient } from "$lib/auth-client";
+    import type { LayoutData } from './$types';
 
-    let { children } = $props();
+    let { children, data }: { children: any, data: LayoutData } = $props();
+
+    async function signOut() {
+        await authClient.signOut({ fetchOptions: { onSuccess: () => { window.location.href = '/login'; } } });
+    }
 </script>
 
 <ModeWatcher />
@@ -20,6 +26,11 @@
             class="flex justify-between items-center pt-4 text-sm text-muted-foreground"
         >
             <span>Version {__APP_VERSION__}</span>
+            {#if data.user}
+                <button onclick={signOut} class="hover:text-foreground transition-colors">
+                    Sign out ({data.user.email})
+                </button>
+            {/if}
             <a
                 href="https://kingoinfo.skku.edu/gaia/nxui/index.html"
                 target="_blank"
