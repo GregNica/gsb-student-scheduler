@@ -18,7 +18,15 @@ export async function handle({ event, resolve }) {
 
 	// Let BetterAuth handle its own API routes
 	if (event.url.pathname.startsWith('/api/auth')) {
-		return svelteKitHandler({ event, resolve, auth });
+		try {
+			return await svelteKitHandler({ event, resolve, auth });
+		} catch (e: any) {
+			console.error('BetterAuth error:', e);
+			return new Response(JSON.stringify({ error: e?.message ?? 'Unknown error', type: e?.constructor?.name }), {
+				status: 500,
+				headers: { 'Content-Type': 'application/json' }
+			});
+		}
 	}
 
 	// Get the current session

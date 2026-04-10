@@ -27,7 +27,8 @@
 				if (data?.redirect) { window.location.href = data.redirect; return; }
 			}
 
-			error = `Unexpected response (${resp.status}). Please try again.`;
+			const body = await resp.text().catch(() => '');
+			error = `Error ${resp.status}: ${body || 'No details'}`;
 			loading = false;
 		} catch (e: any) {
 			error = e?.message ?? 'Sign in failed. Please try again.';
