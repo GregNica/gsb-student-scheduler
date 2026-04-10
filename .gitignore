@@ -1,6 +1,11 @@
 # SvelteKit
 .svelte-kit
 
+# Environment variables — never commit these
+.env
+.env.*
+!.env.example
+
 # Claude AI tool settings (local only)
 .claude/
 
