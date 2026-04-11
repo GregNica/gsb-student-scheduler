@@ -13,23 +13,28 @@ export async function POST(event: RequestEvent) {
 	if (!Array.isArray(semesters) || semesters.length === 0) error(400, 'No data');
 
 	const db = getDb(env.DATABASE_URL);
-	for (const { period, courses } of semesters) {
-		await db.insert(courseData).values({
-			semesterId: period.id,
-			semesterLabel: period.label,
-			semesterDescription: period.description,
-			semesterCategory: period.category,
-			startDate: period.startDate,
-			endDate: period.endDate,
-			startDate2: period.startDate2 ?? null,
-			endDate2: period.endDate2 ?? null,
-			tentative: period.tentative ?? false,
-			courses,
-			updatedAt: new Date()
-		}).onConflictDoUpdate({
-			target: courseData.semesterId,
-			set: { courses, semesterLabel: period.label, semesterDescription: period.description, semesterCategory: period.category, startDate: period.startDate, endDate: period.endDate, startDate2: period.startDate2 ?? null, endDate2: period.endDate2 ?? null, tentative: period.tentative ?? false, updatedAt: new Date() }
-		});
+	try {
+		for (const { period, courses } of semesters) {
+			await db.insert(courseData).values({
+				semesterId: period.id,
+				semesterLabel: period.label,
+				semesterDescription: period.description,
+				semesterCategory: period.category,
+				startDate: period.startDate,
+				endDate: period.endDate,
+				startDate2: period.startDate2 ?? null,
+				endDate2: period.endDate2 ?? null,
+				tentative: period.tentative ?? false,
+				courses,
+				updatedAt: new Date()
+			}).onConflictDoUpdate({
+				target: courseData.semesterId,
+				set: { courses, semesterLabel: period.label, semesterDescription: period.description, semesterCategory: period.category, startDate: period.startDate, endDate: period.endDate, startDate2: period.startDate2 ?? null, endDate2: period.endDate2 ?? null, tentative: period.tentative ?? false, updatedAt: new Date() }
+			});
+		}
+	} catch (e: any) {
+		console.error('course save error:', e);
+		error(500, e?.message ?? 'Database error');
 	}
 
 	return json({ ok: true, updated: semesters.length });
