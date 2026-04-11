@@ -76,11 +76,6 @@ export async function handle({ event, resolve }) {
 			redirect(302, role === 'admin' ? '/admin' : '/setup');
 		}
 
-		// Redirect admin away from /setup to /admin
-		if (event.url.pathname === '/setup' && role === 'admin') {
-			redirect(302, '/admin');
-		}
-
 		// Protect /admin route — admins only
 		if (event.url.pathname.startsWith('/admin') && role !== 'admin') {
 			redirect(302, '/setup');

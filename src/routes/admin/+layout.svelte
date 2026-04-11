@@ -11,6 +11,11 @@
 		{ label: 'User Management', href: '/admin/users' },
 	];
 
+	const previews = [
+		{ label: 'Student View', href: '/setup' },
+		{ label: 'Professor View', href: 'https://gsb-professor-calendar-scheduler.pages.dev' },
+	];
+
 	async function signOut() {
 		await authClient.signOut({ fetchOptions: { onSuccess: () => { window.location.href = '/login'; } } });
 	}
@@ -19,21 +24,27 @@
 <ModeWatcher />
 
 <div class="min-h-screen bg-background flex flex-col">
-	<!-- Admin nav bar -->
 	<header class="border-b bg-background sticky top-0 z-10">
 		<div class="max-w-5xl mx-auto px-4 flex items-center justify-between h-12">
 			<div class="flex items-center gap-1">
-				<span class="text-sm font-semibold text-muted-foreground mr-3">Admin</span>
+				<!-- Admin nav tabs -->
 				{#each tabs as tab}
 					<a href={tab.href}
 						class="px-3 py-1.5 rounded text-sm transition-colors {page.url.pathname === tab.href ? 'bg-primary text-primary-foreground' : 'hover:bg-muted text-muted-foreground hover:text-foreground'}">
 						{tab.label}
 					</a>
 				{/each}
-				<a href="/setup" target="_blank"
-					class="px-3 py-1.5 rounded text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors ml-1">
-					Student View ↗
-				</a>
+
+				<!-- Divider -->
+				<span class="mx-2 text-border">|</span>
+
+				<!-- Preview links -->
+				{#each previews as preview}
+					<a href={preview.href} target="_blank" rel="noopener noreferrer"
+						class="px-3 py-1.5 rounded text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+						{preview.label} ↗
+					</a>
+				{/each}
 			</div>
 			<button onclick={signOut} class="text-xs text-muted-foreground hover:text-foreground transition-colors">
 				Sign out ({data?.user?.email ?? ''})
