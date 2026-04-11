@@ -15,7 +15,29 @@
       "Bash(gh run:*)",
       "Bash(gh repo:*)",
       "Bash(git remote:*)",
-      "Bash(npm test:*)"
+      "Bash(npm test:*)",
+      "Read(//home/gregnica/gsb-professor-calendar-scheduler/src/routes/schedule-review/**)",
+      "Read(//home/gregnica/gsb-professor-calendar-scheduler/src/routes/**)",
+      "Read(//home/gregnica/gsb-professor-calendar-scheduler/src/**)",
+      "Read(//home/gregnica/gsb-professor-calendar-scheduler/**)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Read(//home/gregnica/**)",
+      "Bash(pnpm build:*)",
+      "Bash(pnpm add:*)",
+      "Bash(cat -n node_modules/.pnpm/@sveltejs+adapter-cloudflare@7.2.8_*/node_modules/@sveltejs/adapter-cloudflare/utils.js)",
+      "Bash(cat node_modules/.pnpm/@sveltejs+adapter-cloudflare@7.2.8_*/node_modules/@sveltejs/adapter-cloudflare/package.json)",
+      "Bash(pnpm drizzle-kit:*)",
+      "Bash(pnpm dlx:*)",
+      "Bash(pnpm better-auth:*)",
+      "Bash(./node_modules/.bin/better-auth generate:*)",
+      "Bash(kill %1)",
+      "Bash(pnpm install:*)"
+    ],
+    "additionalDirectories": [
+      "/home/gregnica/gsb-scheduler-admin",
+      "/home/gregnica/gsb-professor-calendar-scheduler/src",
+      "/home/gregnica"
     ]
   }
 }

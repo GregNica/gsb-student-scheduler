@@ -69,14 +69,20 @@ export async function handle({ event, resolve }) {
 			event.locals.user = { ...session.user, role: allowed[0].role } as any;
 		}
 
-		// Redirect logged-in users away from login page based on role
-		if (event.url.pathname === '/login') {
-			const role = (event.locals.user as any)?.role;
+		const role = (event.locals.user as any)?.role;
+
+		// Redirect logged-in users to their landing page
+		if (event.url.pathname === '/login' || event.url.pathname === '/') {
 			redirect(302, role === 'admin' ? '/admin' : '/setup');
 		}
 
+		// Redirect admin away from /setup to /admin
+		if (event.url.pathname === '/setup' && role === 'admin') {
+			redirect(302, '/admin');
+		}
+
 		// Protect /admin route — admins only
-		if (event.url.pathname.startsWith('/admin') && (event.locals.user as any)?.role !== 'admin') {
+		if (event.url.pathname.startsWith('/admin') && role !== 'admin') {
 			redirect(302, '/setup');
 		}
 	}

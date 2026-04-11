@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, boolean, jsonb } from 'drizzle-orm/pg-core';
 
 // BetterAuth required tables
 export const user = pgTable('user', {
@@ -45,6 +45,21 @@ export const allowedEmail = pgTable('allowed_email', {
 	email: text('email').primaryKey(),
 	role: text('role', { enum: ['student', 'professor', 'admin'] }).notNull().default('student'),
 	createdAt: timestamp('created_at').notNull().defaultNow()
+});
+
+// Course data stored by admin — students/professors read from here
+export const courseData = pgTable('course_data', {
+	semesterId: text('semester_id').primaryKey(),
+	semesterLabel: text('semester_label').notNull(),
+	semesterDescription: text('semester_description').notNull(),
+	semesterCategory: text('semester_category').notNull(),
+	startDate: text('start_date').notNull(),
+	endDate: text('end_date').notNull(),
+	startDate2: text('start_date_2'),
+	endDate2: text('end_date_2'),
+	tentative: boolean('tentative').default(false),
+	courses: jsonb('courses').notNull(),
+	updatedAt: timestamp('updated_at').notNull().defaultNow()
 });
 
 export const verification = pgTable('verification', {

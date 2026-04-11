@@ -10,7 +10,7 @@
 			const resp = await fetch('/api/auth/sign-in/social', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ provider: 'google', callbackURL: '/setup' }),
+				body: JSON.stringify({ provider: 'google', callbackURL: '/' }),
 				redirect: 'manual'
 			});
 
