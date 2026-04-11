@@ -73,7 +73,9 @@ export async function handle({ event, resolve }) {
 
 		// Redirect logged-in users to their landing page
 		if (event.url.pathname === '/login' || event.url.pathname === '/') {
-			redirect(302, role === 'admin' ? '/admin' : '/setup');
+			if (role === 'admin') redirect(302, '/admin');
+			if (role === 'professor') redirect(302, '/professor');
+			redirect(302, '/setup');
 		}
 
 		// Protect /admin route — admins only

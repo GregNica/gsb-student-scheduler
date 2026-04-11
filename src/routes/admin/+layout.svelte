@@ -13,7 +13,7 @@
 
 	const previews = [
 		{ label: 'Student View', href: '/setup' },
-		{ label: 'Professor View', href: 'https://gsb-professor-calendar-scheduler.pages.dev' },
+		{ label: 'Professor View', href: '/professor' },
 	];
 
 	async function signOut() {
