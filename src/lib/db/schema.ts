@@ -40,6 +40,13 @@ export const account = pgTable('account', {
 	updatedAt: timestamp('updated_at').notNull().defaultNow()
 });
 
+// Pre-approved emails — only emails listed here can log in (except ADMIN_EMAIL which is auto-created)
+export const allowedEmail = pgTable('allowed_email', {
+	email: text('email').primaryKey(),
+	role: text('role', { enum: ['student', 'professor', 'admin'] }).notNull().default('student'),
+	createdAt: timestamp('created_at').notNull().defaultNow()
+});
+
 export const verification = pgTable('verification', {
 	id: text('id').primaryKey(),
 	identifier: text('identifier').notNull(),

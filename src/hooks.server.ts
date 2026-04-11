@@ -2,7 +2,7 @@ import { getAuth } from '$lib/auth';
 import { svelteKitHandler } from 'better-auth/svelte-kit';
 import { redirect } from '@sveltejs/kit';
 import { getDb } from '$lib/db';
-import { user as userTable } from '$lib/db/schema';
+import { user as userTable, allowedEmail } from '$lib/db/schema';
 import { eq } from 'drizzle-orm';
 import { env } from '$env/dynamic/private';
 
@@ -22,7 +22,7 @@ export async function handle({ event, resolve }) {
 			return await svelteKitHandler({ event, resolve, auth });
 		} catch (e: any) {
 			console.error('BetterAuth error:', e);
-			return new Response(JSON.stringify({ error: e?.message ?? 'Unknown error', type: e?.constructor?.name }), {
+			return new Response(JSON.stringify({ error: e?.message ?? 'Unknown error' }), {
 				status: 500,
 				headers: { 'Content-Type': 'application/json' }
 			});
@@ -46,8 +46,8 @@ export async function handle({ event, resolve }) {
 		const db = getDb(env.DATABASE_URL);
 		const adminEmail = env.ADMIN_EMAIL;
 
-		// Auto-create admin account on first login if email matches ADMIN_EMAIL
 		if (email === adminEmail) {
+			// Auto-create/update admin in user table
 			const existing = await db.select().from(userTable).where(eq(userTable.email, email));
 			if (existing.length === 0) {
 				await db.insert(userTable).values({
@@ -61,16 +61,22 @@ export async function handle({ event, resolve }) {
 			}
 			event.locals.user = { ...session.user, role: 'admin' } as any;
 		} else {
-			// Check if this user is in the database
-			const existing = await db.select().from(userTable).where(eq(userTable.email, email));
-			if (existing.length === 0) {
+			// Check if this email is in the allowed_email table
+			const allowed = await db.select().from(allowedEmail).where(eq(allowedEmail.email, email));
+			if (allowed.length === 0) {
 				redirect(302, '/access-denied');
 			}
-			event.locals.user = { ...session.user, role: existing[0].role } as any;
+			event.locals.user = { ...session.user, role: allowed[0].role } as any;
 		}
 
-		// Redirect logged-in users away from login page
+		// Redirect logged-in users away from login page based on role
 		if (event.url.pathname === '/login') {
+			const role = (event.locals.user as any)?.role;
+			redirect(302, role === 'admin' ? '/admin' : '/setup');
+		}
+
+		// Protect /admin route — admins only
+		if (event.url.pathname.startsWith('/admin') && (event.locals.user as any)?.role !== 'admin') {
 			redirect(302, '/setup');
 		}
 	}

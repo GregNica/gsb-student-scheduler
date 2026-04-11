@@ -1,6 +1,8 @@
 // @ Schedule Excel reader utility
 // # Purpose: Read SKKU-format Excel schedule files (3 header rows + 3 rows per course)
 // # Borrows Excel parsing from fileReader.ts but returns structured course blocks
+// NOTE: Excel reading is not used in the admin app. This file provides type exports
+// that scheduleParser.ts depends on. Excel readers are archived in archive/.
 
 import * as XLSX from 'xlsx';
 
